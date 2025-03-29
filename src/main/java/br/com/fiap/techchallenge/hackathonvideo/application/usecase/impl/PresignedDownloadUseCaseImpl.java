@@ -8,6 +8,8 @@ public class PresignedDownloadUseCaseImpl implements PresignedDownloadUseCase {
 
     @Override
     public String presignedDownload(UUID fileId) {
+        // recupera o video pelo id
+        // retorna a url para download
         return "";
     }
 }

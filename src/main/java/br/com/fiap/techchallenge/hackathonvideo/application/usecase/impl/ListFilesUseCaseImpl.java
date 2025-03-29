@@ -6,6 +6,7 @@ public class ListFilesUseCaseImpl implements ListFilesUseCase {
 
     @Override
     public String getFiles() {
+        // lista os arquivos de acordo usuário
         return "";
     }
 }

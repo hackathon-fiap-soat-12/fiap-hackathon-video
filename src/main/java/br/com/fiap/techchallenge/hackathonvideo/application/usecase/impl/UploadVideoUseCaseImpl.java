@@ -7,6 +7,8 @@ public class UploadVideoUseCaseImpl implements UploadVideoUseCase {
 
     @Override
     public void receiveToProcess(UploadVideoDTO dto) {
-
+        // recupera video do banco
+        // atualiza para recebido
+        // envia para process
     }
 }
