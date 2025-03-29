@@ -21,7 +21,7 @@ public class VideoPersistenceImpl implements VideoPersistence {
     }
 
     @Override
-    public Video create(Video video) {
+    public Video save(Video video) {
         var videoSaved = repository.save(new VideoEntity(video));
         return videoSaved.toModel();
     }

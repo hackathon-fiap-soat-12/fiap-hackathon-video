@@ -20,7 +20,7 @@ public class PresignedUploadUseCaseImpl implements PresignedUploadUseCase {
 
     @Override
     public String presignedUpload(PresignedUploadRequestDTO dto, UUID userId, String email) {
-        var video = videoPersistence.create(new Video(dto.fileName(), userId, email));
+        var video = videoPersistence.save(new Video(dto.fileName(), userId, email));
 
         return fileService.generatePresignedUrl(video.getBucketName(), video.getVideoKey());
     }

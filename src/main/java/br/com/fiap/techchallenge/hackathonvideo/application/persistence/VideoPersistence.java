@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface VideoPersistence {
 
-    Video create(Video video);
+    Video save(Video video);
 
     Video update(Video video);
 
