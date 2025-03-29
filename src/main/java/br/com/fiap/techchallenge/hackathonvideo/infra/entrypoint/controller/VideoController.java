@@ -3,7 +3,7 @@ package br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.controller;
 import br.com.fiap.techchallenge.hackathonvideo.application.usecase.ListFilesUseCase;
 import br.com.fiap.techchallenge.hackathonvideo.application.usecase.PresignedDownloadUseCase;
 import br.com.fiap.techchallenge.hackathonvideo.application.usecase.PresignedUploadUseCase;
-import br.com.fiap.techchallenge.hackathonvideo.enums.ProcessStatus;
+import br.com.fiap.techchallenge.hackathonvideo.domain.enums.ProcessStatus;
 import br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.controller.dto.*;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -32,7 +32,7 @@ public class VideoController {
 
     @PostMapping("/presigned-upload")
     public ResponseEntity<PresignedUploadResponseDTO> presignedUpload(@RequestBody @Valid PresignedUploadRequestDTO dto,
-                                                                      @RequestHeader("user_id") String userId,
+                                                                      @RequestHeader("user_id") UUID userId,
                                                                       @RequestHeader("email") String email){
 
         var response = presignedUploadUseCase.presignedUpload(dto, userId, email);
