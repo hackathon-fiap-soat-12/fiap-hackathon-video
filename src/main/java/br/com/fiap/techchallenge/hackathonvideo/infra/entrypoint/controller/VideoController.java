@@ -47,8 +47,8 @@ public class VideoController {
     }
 
     @GetMapping("/files")
-    public ResponseEntity<?> getFiles(){
-        var response = listFilesUseCase.getFiles();
+    public ResponseEntity<?> getFiles(@RequestParam(value = "user_id") UUID userId){
+        var response = listFilesUseCase.getFiles(userId);
         return ResponseEntity.status(HttpStatus.OK).body(new ListFilesResponseDTO(List.of(new FileResponseDTO(UUID.randomUUID(), "videoName", ProcessStatus.PROCESSING)),
                 new PageResponseDTO(1L,1L,1L, 1L,true, true,1L,true)));
     }
