@@ -1,6 +1,6 @@
 package br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.consumer.updatevideo.dto;
 
-import br.com.fiap.techchallenge.hackathonvideo.enums.ProcessStatus;
+import br.com.fiap.techchallenge.hackathonvideo.domain.enums.ProcessStatus;
 
 import java.util.UUID;
 
