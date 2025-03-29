@@ -1,4 +1,4 @@
-package br.com.fiap.techchallenge.hackathonvideo.enums;
+package br.com.fiap.techchallenge.hackathonvideo.domain.enums;
 
 public enum ProcessStatus {
     NEW,
