@@ -39,11 +39,11 @@ public class VideoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new PresignedUploadResponseDTO("url", "PUT", 3000));
     }
 
-    @GetMapping("/files/{fileId}/presigned-download")
-    public ResponseEntity<PresignedDownloadResponseDTO> presignedDownload(@PathVariable("fileId") UUID fileId){
+    @GetMapping("/files/{id}/presigned-download")
+    public ResponseEntity<PresignedDownloadResponseDTO> presignedDownload(@PathVariable("id") UUID id){
 
-        var response = presignedDownloadUseCase.presignedDownload(fileId);
-        return ResponseEntity.status(HttpStatus.OK).body(new PresignedDownloadResponseDTO("url", "GET"));
+        var url = presignedDownloadUseCase.presignedDownload(id);
+        return ResponseEntity.status(HttpStatus.OK).body(new PresignedDownloadResponseDTO(url, "GET"));
     }
 
     @GetMapping("/files")
