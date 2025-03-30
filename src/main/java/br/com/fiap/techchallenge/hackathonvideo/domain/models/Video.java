@@ -1,37 +1,32 @@
 package br.com.fiap.techchallenge.hackathonvideo.domain.models;
 
-import br.com.fiap.techchallenge.hackathonvideo.domain.constants.Constants;
 import br.com.fiap.techchallenge.hackathonvideo.domain.enums.ProcessStatus;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static br.com.fiap.techchallenge.hackathonvideo.domain.constants.Constants.*;
+
 public class Video {
 
     private UUID id;
 
-    private UUID userId;
+    private final User user;
 
-    private String userEmail;
+    private final String videoKey;
 
-    private String bucketName = Constants.BUCKET_NAME;
-
-    private String videoKey;
-
-    private String framesKey;
+    private final String framesKey;
 
     private ProcessStatus status;
 
-    private LocalDateTime createdAt;
+    private final LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
 
-    public Video(UUID id, UUID userId, String userEmail, String bucketName, String videoKey, String framesKey,
+    public Video(UUID id, User user, String videoKey, String framesKey,
                  ProcessStatus status, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
-        this.userId = userId;
-        this.userEmail = userEmail;
-        this.bucketName = bucketName;
+        this.user = user;
         this.videoKey = videoKey;
         this.framesKey = framesKey;
         this.status = status;
@@ -39,56 +34,37 @@ public class Video {
         this.updatedAt = updatedAt;
     }
 
-    public Video(String fileName, UUID userId, String userEmail) {
-        this.userId = userId;
-        this.userEmail = userEmail;
-        this.videoKey = fileName;
+    public Video(String fileName, User user) {
+        this.user = user;
+        this.videoKey = user.getId() + PATH_VIDEO + fileName;
+        this.framesKey = user.getId() + PATH_FRAMES + fileName;
         this.status = ProcessStatus.NEW;
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public UUID getId() {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
     public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
+        return this.user.getId();
     }
 
     public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+        return user.getEmail();
     }
 
     public String getBucketName() {
-        return bucketName;
+        return BUCKET_NAME;
     }
 
     public String getVideoKey() {
         return videoKey;
     }
 
-    public void setVideoKey(String videoKey) {
-        this.videoKey = videoKey;
-    }
-
     public String getFramesKey() {
         return framesKey;
-    }
-
-    public void setFramesKey(String framesKey) {
-        this.framesKey = framesKey;
     }
 
     public ProcessStatus getStatus() {
@@ -97,25 +73,19 @@ public class Video {
 
     public void setStatus(ProcessStatus status) {
         this.status = status;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     public void setReceived() {
         this.status = ProcessStatus.RECEIVED;
+        this.updatedAt = LocalDateTime.now();
     }
 }

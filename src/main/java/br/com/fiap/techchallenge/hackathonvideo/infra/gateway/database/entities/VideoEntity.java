@@ -1,6 +1,7 @@
 package br.com.fiap.techchallenge.hackathonvideo.infra.gateway.database.entities;
 
 import br.com.fiap.techchallenge.hackathonvideo.domain.enums.ProcessStatus;
+import br.com.fiap.techchallenge.hackathonvideo.domain.models.User;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
@@ -33,18 +34,15 @@ public class VideoEntity {
     }
 
     public VideoEntity(Video video) {
-        this.id = video.getId();
-        this.userId = video.getUserId();
-        this.userEmail = video.getUserEmail();
-        this.bucketName = video.getBucketName();
-        this.videoKey = video.getVideoKey();
-        this.framesKey = video.getFramesKey();
-        this.status = video.getStatus();
-        this.createdAt = video.getCreatedAt();
-        this.updatedAt = video.getUpdatedAt();
+        this.assignItems(video);
     }
 
     public VideoEntity update(Video video) {
+        this.assignItems(video);
+        return this;
+    }
+
+    private void assignItems(Video video){
         this.id = video.getId();
         this.userId = video.getUserId();
         this.userEmail = video.getUserEmail();
@@ -54,7 +52,6 @@ public class VideoEntity {
         this.status = video.getStatus();
         this.createdAt = video.getCreatedAt();
         this.updatedAt = video.getUpdatedAt();
-        return this;
     }
 
     @DynamoDbPartitionKey
@@ -131,6 +128,6 @@ public class VideoEntity {
     }
 
     public Video toModel() {
-        return new Video(this.id, this.userId, this.userEmail, this.bucketName, this.videoKey, this.framesKey, this.status, this.createdAt, this.updatedAt);
+        return new Video(this.id, new User(this.userId, this.userEmail), this.videoKey, this.framesKey, this.status, this.createdAt, this.updatedAt);
     }
 }

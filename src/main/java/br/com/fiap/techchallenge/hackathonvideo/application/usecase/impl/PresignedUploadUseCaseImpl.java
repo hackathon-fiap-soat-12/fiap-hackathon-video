@@ -2,6 +2,8 @@ package br.com.fiap.techchallenge.hackathonvideo.application.usecase.impl;
 
 import br.com.fiap.techchallenge.hackathonvideo.application.persistence.VideoPersistence;
 import br.com.fiap.techchallenge.hackathonvideo.application.usecase.PresignedUploadUseCase;
+import br.com.fiap.techchallenge.hackathonvideo.domain.models.PresignedFile;
+import br.com.fiap.techchallenge.hackathonvideo.domain.models.User;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
 import br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.controller.dto.PresignedUploadRequestDTO;
 import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.filestorage.FileService;
@@ -19,8 +21,8 @@ public class PresignedUploadUseCaseImpl implements PresignedUploadUseCase {
     }
 
     @Override
-    public String presignedUpload(PresignedUploadRequestDTO dto, UUID userId, String email) {
-        var video = videoPersistence.save(new Video(dto.fileName(), userId, email));
+    public PresignedFile presignedUpload(PresignedUploadRequestDTO dto, UUID userId, String email) {
+        var video = videoPersistence.save(new Video(dto.fileName(), new User(userId, email)));
 
         return fileService.generatePresignedUrl(video.getBucketName(), video.getVideoKey());
     }
