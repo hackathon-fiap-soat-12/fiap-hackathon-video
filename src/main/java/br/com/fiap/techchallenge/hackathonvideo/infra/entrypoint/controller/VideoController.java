@@ -35,19 +35,21 @@ public class VideoController {
                                                                       @RequestHeader("user_id") UUID userId,
                                                                       @RequestHeader("email") String email){
 
-        var response = presignedUploadUseCase.presignedUpload(dto, userId, email);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new PresignedUploadResponseDTO("url", "PUT", 3000));
+        var presignedFile = presignedUploadUseCase.presignedUpload(dto, userId, email);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(new PresignedUploadResponseDTO(presignedFile));
     }
 
     @GetMapping("/files/{id}/presigned-download")
     public ResponseEntity<PresignedDownloadResponseDTO> presignedDownload(@PathVariable("id") UUID id){
 
         var url = presignedDownloadUseCase.presignedDownload(id);
-        return ResponseEntity.status(HttpStatus.OK).body(new PresignedDownloadResponseDTO(url, "GET"));
+
+        return ResponseEntity.status(HttpStatus.OK).body(new PresignedDownloadResponseDTO(url));
     }
 
     @GetMapping("/files")
-    public ResponseEntity<?> getFiles(@RequestParam(value = "user_id") UUID userId){
+    public ResponseEntity<ListFilesResponseDTO> getFiles(@RequestParam(value = "user_id") UUID userId){
         var response = listFilesUseCase.getFiles(userId);
         return ResponseEntity.status(HttpStatus.OK).body(new ListFilesResponseDTO(List.of(new FileResponseDTO(UUID.randomUUID(), "videoName", ProcessStatus.PROCESSING)),
                 new PageResponseDTO(1L,1L,1L, 1L,true, true,1L,true)));
