@@ -1,9 +1,12 @@
 package br.com.fiap.techchallenge.hackathonvideo.infra.gateway.filestorage;
 
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.PresignedFile;
+import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
+
+import java.util.UUID;
 
 public interface FileService {
-    PresignedFile generateUploadPresignedUrl(String bucketName, String fileType, String key);
+    PresignedFile generateUploadPresignedUrl(Video video, String fileType);
 
-    PresignedFile generateDownloadPresignedUrl(String bucketName, String key);
+    PresignedFile generateDownloadPresignedUrl(Video video);
 }

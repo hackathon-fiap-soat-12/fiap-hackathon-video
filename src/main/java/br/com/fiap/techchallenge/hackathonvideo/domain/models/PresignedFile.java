@@ -1,17 +1,22 @@
 package br.com.fiap.techchallenge.hackathonvideo.domain.models;
 
+import br.com.fiap.techchallenge.hackathonvideo.domain.enums.PresignedMethods;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
 public class PresignedFile {
 
-    private UUID id;
+    private final UUID id;
     private final String url;
+    private final PresignedMethods method;
     private final Instant expiresIn;
 
-    public PresignedFile(String url, Instant expiresIn) {
+    public PresignedFile(UUID id, String url, PresignedMethods method, Instant expiresIn) {
+        this.id = id;
         this.url = url;
+        this.method = method;
         this.expiresIn = expiresIn;
     }
 
@@ -27,7 +32,7 @@ public class PresignedFile {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public PresignedMethods getMethod() {
+        return method;
     }
 }
