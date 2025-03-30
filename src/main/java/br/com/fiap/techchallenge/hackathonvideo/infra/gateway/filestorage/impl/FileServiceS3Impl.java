@@ -8,6 +8,8 @@ import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignReques
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class FileServiceS3Impl implements FileService {
@@ -19,11 +21,14 @@ public class FileServiceS3Impl implements FileService {
     }
 
     @Override
-    public PresignedFile generateUploadPresignedUrl(String bucketName, String key) {
+    public PresignedFile generateUploadPresignedUrl(String bucketName, String fileType, String key) {
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("Content-Type", fileType);
+
         var presignedPutRequest = s3Presigner.presignPutObject(
                 PutObjectPresignRequest.builder()
-                        .signatureDuration(Duration.ofMillis(300000L))
-                        .putObjectRequest(b -> b.bucket(bucketName).key(key))
+                        .signatureDuration(Duration.ofMinutes(5))
+                        .putObjectRequest(b -> b.bucket(bucketName).key(key).metadata(metadata))
                         .build()
         );
 
@@ -34,7 +39,7 @@ public class FileServiceS3Impl implements FileService {
     public PresignedFile generateDownloadPresignedUrl(String bucketName, String key) {
         var presignedGetRequest = s3Presigner.presignGetObject(
                 GetObjectPresignRequest.builder()
-                        .signatureDuration(Duration.ofMillis(300000L))
+                        .signatureDuration(Duration.ofMinutes(5))
                         .getObjectRequest(b -> b.bucket(bucketName).key(key))
                         .build()
         );
