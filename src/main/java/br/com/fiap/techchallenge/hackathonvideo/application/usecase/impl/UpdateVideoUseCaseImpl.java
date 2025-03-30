@@ -28,7 +28,7 @@ public class UpdateVideoUseCaseImpl implements UpdateVideoUseCase {
         videoPersistence.update(video);
 
         if(!ProcessStatus.PROCESSING.equals(updateVideoDto.status())){
-            pushNotificationProducer.sendToPushNotification(new PushNotificationDTO(video.getUserEmail(), updateVideoDto.status(), video.getVideoKey()));
+            pushNotificationProducer.sendToPushNotification(new PushNotificationDTO(video.getUserEmail(), updateVideoDto.status(), video.getVideoName()));
         }
     }
 }
