@@ -1,6 +1,7 @@
 package br.com.fiap.techchallenge.hackathonvideo.infra.gateway.database.entities;
 
 import br.com.fiap.techchallenge.hackathonvideo.domain.enums.ProcessStatus;
+import br.com.fiap.techchallenge.hackathonvideo.domain.models.Audit;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.User;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
@@ -19,6 +20,8 @@ public class VideoEntity {
     private String userEmail;
 
     private String bucketName;
+
+    private String videoName;
 
     private String videoKey;
 
@@ -47,6 +50,7 @@ public class VideoEntity {
         this.userId = video.getUserId();
         this.userEmail = video.getUserEmail();
         this.bucketName = video.getBucketName();
+        this.videoName = video.getVideoName();
         this.videoKey = video.getVideoKey();
         this.framesKey = video.getFramesKey();
         this.status = video.getStatus();
@@ -85,6 +89,14 @@ public class VideoEntity {
 
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
+    }
+
+    public String getVideoName() {
+        return this.videoName;
+    }
+
+    public void setVideoName(String videoName) {
+        this.videoName = videoName;
     }
 
     public String getVideoKey() {
@@ -128,6 +140,14 @@ public class VideoEntity {
     }
 
     public Video toModel() {
-        return new Video(this.id, new User(this.userId, this.userEmail), this.videoKey, this.framesKey, this.status, this.createdAt, this.updatedAt);
+        return new Video(
+                this.id,
+                new User(this.userId, this.userEmail),
+                this.videoKey,
+                this.framesKey,
+                this.videoName,
+                this.status,
+                new Audit(this.createdAt, this.updatedAt)
+        );
     }
 }

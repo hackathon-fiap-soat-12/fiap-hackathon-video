@@ -9,9 +9,11 @@ import static br.com.fiap.techchallenge.hackathonvideo.domain.constants.Constant
 
 public class Video {
 
-    private UUID id;
+    private final UUID id;
 
     private final User user;
+
+    private final String videoName;
 
     private final String videoKey;
 
@@ -19,28 +21,27 @@ public class Video {
 
     private ProcessStatus status;
 
-    private final LocalDateTime createdAt;
+    private final Audit audit;
 
-    private LocalDateTime updatedAt;
-
-    public Video(UUID id, User user, String videoKey, String framesKey,
-                 ProcessStatus status, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Video(UUID id, User user, String videoKey, String framesKey, String videoName,
+                 ProcessStatus status, Audit audit) {
         this.id = id;
         this.user = user;
+        this.videoName = videoName;
         this.videoKey = videoKey;
         this.framesKey = framesKey;
         this.status = status;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.audit = audit;
     }
 
-    public Video(String fileName, User user) {
+    public Video(String videoName, User user) {
+        this.id = UUID.randomUUID();
         this.user = user;
-        this.videoKey = user.getId() + PATH_VIDEO + fileName;
-        this.framesKey = user.getId() + PATH_FRAMES + fileName;
+        this.videoName = videoName;
+        this.videoKey = PATH_VIDEO + videoName;
+        this.framesKey = PATH_FRAMES + videoName + ".zip";
         this.status = ProcessStatus.NEW;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.audit = new Audit(LocalDateTime.now(), LocalDateTime.now());
     }
 
     public UUID getId() {
@@ -59,6 +60,10 @@ public class Video {
         return BUCKET_NAME;
     }
 
+    public String getVideoName() {
+        return videoName;
+    }
+
     public String getVideoKey() {
         return videoKey;
     }
@@ -73,19 +78,19 @@ public class Video {
 
     public void setStatus(ProcessStatus status) {
         this.status = status;
-        this.updatedAt = LocalDateTime.now();
+        audit.setUpdatedAt(LocalDateTime.now());
     }
 
     public LocalDateTime getCreatedAt() {
-        return createdAt;
+        return audit.getCreatedAt();
     }
 
     public LocalDateTime getUpdatedAt() {
-        return updatedAt;
+        return audit.getUpdatedAt();
     }
 
     public void setReceived() {
         this.status = ProcessStatus.RECEIVED;
-        this.updatedAt = LocalDateTime.now();
+        audit.setUpdatedAt(LocalDateTime.now());
     }
 }
