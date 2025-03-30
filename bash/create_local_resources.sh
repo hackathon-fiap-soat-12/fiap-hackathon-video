@@ -19,11 +19,17 @@ done
 
 echo "Todas as filas foram criadas com sucesso!"
 
-aws --endpoint http://localhost:4566 s3 mb s3://videofiles
+aws --endpoint "$ENDPOINT" s3 mb s3://videofiles
 
 echo "Bucket criado com sucesso!"
 
-aws --endpoint="http://localhost:4566"  dynamodb create-table \
+echo $null > empty.txt
+aws --endpoint-url="$ENDPOINT" s3 cp empty.txt s3://videofiles/videos/
+rm -f empty.txt
+
+echo "folders criados com sucesso!"
+
+aws --endpoint="$ENDPOINT"  dynamodb create-table \
     --table-name video_entity \
     --attribute-definitions \
         AttributeName=id,AttributeType=S \
