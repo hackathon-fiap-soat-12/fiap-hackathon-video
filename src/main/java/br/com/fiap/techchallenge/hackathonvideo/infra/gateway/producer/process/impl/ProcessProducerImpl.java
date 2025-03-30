@@ -30,6 +30,8 @@ public class ProcessProducerImpl implements ProcessProducer {
     public void sendToProcess(VideoToProcessDTO dto) {
         try {
             sqsTemplate.send(processQueue, objectMapper.writeValueAsString(dto));
+
+            logger.info("Sent video id {} to process", dto.id());
         } catch (JsonProcessingException e) {
             logger.error("Error on send video {} to process", dto.id());
         }

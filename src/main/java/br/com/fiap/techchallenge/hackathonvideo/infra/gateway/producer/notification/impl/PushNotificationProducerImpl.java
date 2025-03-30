@@ -30,6 +30,8 @@ public class PushNotificationProducerImpl implements PushNotificationProducer {
     public void sendToPushNotification(PushNotificationDTO dto) {
         try {
             sqsTemplate.send(notificationPushQueue, objectMapper.writeValueAsString(dto));
+
+            logger.info("Sent video {} to push notification with status {}", dto.videoName(), dto.status());
         } catch (JsonProcessingException e) {
             logger.error("Error on push notification for video {}", dto.videoName());
         }
