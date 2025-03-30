@@ -24,6 +24,6 @@ public class PresignedUploadUseCaseImpl implements PresignedUploadUseCase {
     public PresignedFile presignedUpload(PresignedUploadRequestDTO dto, UUID userId, String email) {
         var video = videoPersistence.save(new Video(dto.fileName(), new User(userId, email)));
 
-        return fileService.generatePresignedUrl(video.getBucketName(), video.getVideoKey());
+        return fileService.generateUploadPresignedUrl(video.getBucketName(), video.getVideoName());
     }
 }

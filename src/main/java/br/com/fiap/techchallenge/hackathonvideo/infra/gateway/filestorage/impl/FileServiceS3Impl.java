@@ -5,6 +5,7 @@ import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.filestorage.FileSe
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
 import java.time.Duration;
 
@@ -18,14 +19,26 @@ public class FileServiceS3Impl implements FileService {
     }
 
     @Override
-    public PresignedFile generatePresignedUrl(String bucketName, String key) {
-        var presignedRequest = s3Presigner.presignGetObject(
+    public PresignedFile generateUploadPresignedUrl(String bucketName, String key) {
+        var presignedPutRequest = s3Presigner.presignPutObject(
+                PutObjectPresignRequest.builder()
+                        .signatureDuration(Duration.ofMillis(300000L))
+                        .putObjectRequest(b -> b.bucket(bucketName).key(key))
+                        .build()
+        );
+
+        return new PresignedFile(presignedPutRequest.url().toString(), presignedPutRequest.expiration());
+    }
+
+    @Override
+    public PresignedFile generateDownloadPresignedUrl(String bucketName, String key) {
+        var presignedGetRequest = s3Presigner.presignGetObject(
                 GetObjectPresignRequest.builder()
                         .signatureDuration(Duration.ofMillis(300000L))
                         .getObjectRequest(b -> b.bucket(bucketName).key(key))
                         .build()
         );
 
-        return new PresignedFile(presignedRequest.url().toString(), presignedRequest.expiration());
+        return new PresignedFile(presignedGetRequest.url().toString(), presignedGetRequest.expiration());
     }
 }
