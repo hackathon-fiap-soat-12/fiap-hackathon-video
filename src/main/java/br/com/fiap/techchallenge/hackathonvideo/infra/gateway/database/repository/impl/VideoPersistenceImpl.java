@@ -40,8 +40,11 @@ public class VideoPersistenceImpl implements VideoPersistence {
 
     @Override
     public List<Video> findAllByUserId(UUID userId) {
-        Page<VideoEntity> page = repository.findAllByUserId(userId, 30,3 );
-        List<VideoEntity> videos = page.items();
-        return videos.stream().map(VideoEntity::toModel).toList();
+//        Page<VideoEntity> page = repository.findAllByUserId(userId, 30,3 );
+//        List<VideoEntity> videos = page.items();
+
+        var paged = repository.findAllByUserId(userId);
+
+        return paged.stream().map(VideoEntity::toModel).toList();
     }
 }

@@ -37,7 +37,7 @@ public class VideoRepositoryImpl implements VideoRepository {
         return Optional.ofNullable(dynamoDbTemplate.load(key, VideoEntity.class));
     }
 
-    public PageIterable<VideoEntity> findAllByUserId(UUID userId) {
+    public List<VideoEntity> findAllByUserId(UUID userId) {
         ScanEnhancedRequest scanEnhancedRequest = ScanEnhancedRequest.builder()
                 .filterExpression(Expression.builder()
                         .expression("userId = :userIdVal")
@@ -46,7 +46,7 @@ public class VideoRepositoryImpl implements VideoRepository {
                         .build())
                 .build();
 
-        return dynamoDbTemplate.scan(scanEnhancedRequest, VideoEntity.class);
+        return dynamoDbTemplate.scan(scanEnhancedRequest, VideoEntity.class).items().stream().toList();
     }
 
     @Override
@@ -57,7 +57,8 @@ public class VideoRepositoryImpl implements VideoRepository {
             ScanEnhancedRequest scanRequest = ScanEnhancedRequest.builder()
                     .filterExpression(Expression.builder()
                             .expression("userId = :userId")
-                            .expressionValues(Map.of(":userId", AttributeValue.builder().s(userId.toString()).build()))
+                            .expressionValues(Map.of(":userId",
+                                    AttributeValue.builder().s(userId.toString()).build()))
                             .build())
                     .limit(pageSize)
                     .exclusiveStartKey(lastEvaluatedKey) // Ponto de partida para a página

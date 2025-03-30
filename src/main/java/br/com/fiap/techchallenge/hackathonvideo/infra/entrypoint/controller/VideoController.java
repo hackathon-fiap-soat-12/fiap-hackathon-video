@@ -3,14 +3,12 @@ package br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.controller;
 import br.com.fiap.techchallenge.hackathonvideo.application.usecase.ListFilesUseCase;
 import br.com.fiap.techchallenge.hackathonvideo.application.usecase.PresignedDownloadUseCase;
 import br.com.fiap.techchallenge.hackathonvideo.application.usecase.PresignedUploadUseCase;
-import br.com.fiap.techchallenge.hackathonvideo.domain.enums.ProcessStatus;
 import br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.controller.dto.*;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -50,9 +48,9 @@ public class VideoController {
 
     @GetMapping("/files")
     public ResponseEntity<ListFilesResponseDTO> getFiles(@RequestParam(value = "user_id") UUID userId){
+
         var files = listFilesUseCase.getFiles(userId);
+
         return ResponseEntity.status(HttpStatus.OK).body(new ListFilesResponseDTO(files));
-//        return ResponseEntity.status(HttpStatus.OK).body(new ListFilesResponseDTO(List.of(new FileResponseDTO(UUID.randomUUID(), "videoName", ProcessStatus.PROCESSING)),
-//                new PageResponseDTO(1L,1L,1L, 1L,true, true,1L,true)));
     }
 }

@@ -3,6 +3,7 @@ package br.com.fiap.techchallenge.hackathonvideo.infra.gateway.database.reposito
 import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.database.entities.VideoEntity;
 import software.amazon.awssdk.enhanced.dynamodb.model.Page;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,6 +11,8 @@ public interface VideoRepository {
     VideoEntity save(VideoEntity videoEntity);
 
     Optional<VideoEntity> findById(UUID id);
+
+    List<VideoEntity> findAllByUserId(UUID userId);
 
     Page<VideoEntity> findAllByUserId(UUID userId, int pageSize, int pageNumber);
 }
