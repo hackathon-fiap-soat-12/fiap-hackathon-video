@@ -30,10 +30,6 @@ public class PresignedUploadUseCaseImpl implements PresignedUploadUseCase {
 
         logger.info("Presigned Upload video id {} requested by user id {}", video.getId(), userId);
 
-        var presignedFile = fileService.generateUploadPresignedUrl(video.getBucketName(), dto.fileType(), video.getVideoKey());
-
-        presignedFile.setId(video.getId());
-
-        return presignedFile;
+        return fileService.generateUploadPresignedUrl(video, dto.fileType());
     }
 }

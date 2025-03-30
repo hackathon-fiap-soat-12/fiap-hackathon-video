@@ -43,15 +43,16 @@ public class VideoController {
     @GetMapping("/files/{id}/presigned-download")
     public ResponseEntity<PresignedDownloadResponseDTO> presignedDownload(@PathVariable("id") UUID id){
 
-        var url = presignedDownloadUseCase.presignedDownload(id);
+        var presignedFile = presignedDownloadUseCase.presignedDownload(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(new PresignedDownloadResponseDTO(url));
+        return ResponseEntity.status(HttpStatus.OK).body(new PresignedDownloadResponseDTO(presignedFile));
     }
 
     @GetMapping("/files")
     public ResponseEntity<ListFilesResponseDTO> getFiles(@RequestParam(value = "user_id") UUID userId){
-        var response = listFilesUseCase.getFiles(userId);
-        return ResponseEntity.status(HttpStatus.OK).body(new ListFilesResponseDTO(List.of(new FileResponseDTO(UUID.randomUUID(), "videoName", ProcessStatus.PROCESSING)),
-                new PageResponseDTO(1L,1L,1L, 1L,true, true,1L,true)));
+        var files = listFilesUseCase.getFiles(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(new ListFilesResponseDTO(files));
+//        return ResponseEntity.status(HttpStatus.OK).body(new ListFilesResponseDTO(List.of(new FileResponseDTO(UUID.randomUUID(), "videoName", ProcessStatus.PROCESSING)),
+//                new PageResponseDTO(1L,1L,1L, 1L,true, true,1L,true)));
     }
 }
