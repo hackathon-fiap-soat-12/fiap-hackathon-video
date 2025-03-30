@@ -7,10 +7,14 @@ import br.com.fiap.techchallenge.hackathonvideo.domain.models.User;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
 import br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.controller.dto.PresignedUploadRequestDTO;
 import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.filestorage.FileService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
 public class PresignedUploadUseCaseImpl implements PresignedUploadUseCase {
+
+    private static final Logger logger = LoggerFactory.getLogger(PresignedUploadUseCaseImpl.class);
 
     private final VideoPersistence videoPersistence;
     private final FileService fileService;
@@ -24,6 +28,12 @@ public class PresignedUploadUseCaseImpl implements PresignedUploadUseCase {
     public PresignedFile presignedUpload(PresignedUploadRequestDTO dto, UUID userId, String email) {
         var video = videoPersistence.save(new Video(dto.fileName(), new User(userId, email)));
 
-        return fileService.generateUploadPresignedUrl(video.getBucketName(), video.getVideoName());
+        logger.info("Presigned Upload video id {} requested by user id {}", video.getId(), userId);
+
+        var presignedFile = fileService.generateUploadPresignedUrl(video.getBucketName(), dto.fileType(), video.getVideoKey());
+
+        presignedFile.setId(video.getId());
+
+        return presignedFile;
     }
 }
