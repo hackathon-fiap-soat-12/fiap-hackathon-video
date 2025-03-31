@@ -25,7 +25,7 @@ public class PresignedDownloadUseCaseImpl implements PresignedDownloadUseCase {
     @Override
     public PresignedFile presignedDownload(UUID id) {
         var video = videoPersistence.findById(id)
-                .orElseThrow(() -> new DoesNotExistException("Video not found"));
+                .orElseThrow(() -> new DoesNotExistException("Zip File not found"));
 
         logger.info("Presigned Download video id {} requested by user id {}", video.getId(), video.getUserId());
 
