@@ -6,6 +6,8 @@ import br.com.fiap.techchallenge.hackathonvideo.domain.models.User;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondarySortKey;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -67,6 +69,7 @@ public class VideoEntity {
         this.id = id;
     }
 
+    @DynamoDbSecondaryPartitionKey(indexNames = "UserCreatedAtIndex")
     public UUID getUserId() {
         return userId;
     }
@@ -123,6 +126,7 @@ public class VideoEntity {
         this.status = status;
     }
 
+    @DynamoDbSecondarySortKey(indexNames = "UserCreatedAtIndex")
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

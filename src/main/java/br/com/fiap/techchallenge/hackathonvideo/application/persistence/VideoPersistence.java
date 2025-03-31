@@ -1,8 +1,7 @@
 package br.com.fiap.techchallenge.hackathonvideo.application.persistence;
 
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
-
-import java.util.List;
+import br.com.fiap.techchallenge.hackathonvideo.domain.models.pageable.CustomPage;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,5 +13,5 @@ public interface VideoPersistence {
 
     Optional<Video> findById(UUID id);
 
-    List<Video> findAllByUserId(UUID userId);
+    CustomPage findAllByUserId(UUID userId, Integer pageSize, String exclusiveStartKey);
 }

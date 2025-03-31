@@ -1,10 +1,8 @@
 package br.com.fiap.techchallenge.hackathonvideo.application.usecase;
 
-import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
-
-import java.util.List;
+import br.com.fiap.techchallenge.hackathonvideo.domain.models.pageable.CustomPage;
 import java.util.UUID;
 
 public interface ListFilesUseCase {
-    List<Video> getFiles(UUID userId);
+    CustomPage getFiles(UUID userId, Integer pageSize, String exclusiveStartKey);
 }
