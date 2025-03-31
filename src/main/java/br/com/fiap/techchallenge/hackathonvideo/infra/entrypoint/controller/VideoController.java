@@ -3,16 +3,12 @@ package br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.controller;
 import br.com.fiap.techchallenge.hackathonvideo.application.usecase.ListFilesUseCase;
 import br.com.fiap.techchallenge.hackathonvideo.application.usecase.PresignedDownloadUseCase;
 import br.com.fiap.techchallenge.hackathonvideo.application.usecase.PresignedUploadUseCase;
-import br.com.fiap.techchallenge.hackathonvideo.domain.models.pageable.CustomPage;
 import br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.controller.dto.*;
-import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.database.entities.VideoEntity;
-import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.database.repository.impl.PaginatedResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.UUID;
 
 @RestController

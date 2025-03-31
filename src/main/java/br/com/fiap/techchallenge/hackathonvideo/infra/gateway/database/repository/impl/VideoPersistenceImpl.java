@@ -8,10 +8,8 @@ import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.database.repositor
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Repository;
-import software.amazon.awssdk.enhanced.dynamodb.model.Page;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -83,36 +81,14 @@ public class VideoPersistenceImpl implements VideoPersistence {
         }
 
         try {
-            // Converte Map<String, AttributeValue> para Map<String, String>
             Map<String, String> keyAsStringMap = lastEvaluatedKey.entrySet().stream()
                     .collect(Collectors.toMap(
                             Map.Entry::getKey,
                             entry -> entry.getValue().s() != null ? entry.getValue().s() : entry.getValue().n()
                     ));
-
-            // Retorna a string JSON ao invés de um objeto JSON
             return objectMapper.writeValueAsString(keyAsStringMap);
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao converter LastEvaluatedKey para String", e);
+            throw new IllegalArgumentException("Erro ao converter LastEvaluatedKey para String", e);
         }
     }
 }
-
-//        List<VideoEntity> videos = response.getItems();
-//        Map<String, AttributeValue> nextKey = response.getLastEvaluatedKey();
-//
-//// Buscar a próxima página se houver mais registros
-//        if (nextKey != null) {
-//            PaginatedResponse<VideoEntity> nextPage = repository.findAllByUserId(userId, 10, nextKey);
-//            List<VideoEntity> nextVideos = nextPage.getItems();
-//        }
-//
-//
-//
-//
-////        Page<VideoEntity> page = repository.findAllByUserId(userId, 30,3 );
-////        List<VideoEntity> videos = page.items();
-//
-//        var paged = repository.findAllByUserId(userId);
-//
-//        return paged.stream().map(VideoEntity::toModel).toList();
