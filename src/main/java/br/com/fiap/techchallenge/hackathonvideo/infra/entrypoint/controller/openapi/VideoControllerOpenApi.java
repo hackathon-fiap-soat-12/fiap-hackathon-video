@@ -48,5 +48,5 @@ public interface VideoControllerOpenApi {
             content = @Content(mediaType = "application/json", schema = @Schema(ref = "ProblemDto")))
     ResponseEntity<ListFilesResponseDTO> getFiles(@Schema(example = "4f2da442-81d6-47d9-bfbb-3b525c6f0606") UUID userId,
                                                   @Schema(example = "3") Integer pageSize,
-                                                  @Schema(example = "{\\\"createdAt\\\":\\\"2025-03-31T12:28:09.775653700\\\",\\\"id\\\":\\\"031193eb-6464-4d18-91f7-d0be91714561\\\",\\\"userId\\\":\\\"4f2da442-81d6-47d9-bfbb-3b525c6f0606\\\"}") String exclusiveStartKey);
+                                                  @Schema(example = "{\"createdAt\":\"2025-03-31T12:28:09.775653700\",\"id\":\"031193eb-6464-4d18-91f7-d0be91714561\",\"userId\":\"4f2da442-81d6-47d9-bfbb-3b525c6f0606\"}") String exclusiveStartKey);
 }
