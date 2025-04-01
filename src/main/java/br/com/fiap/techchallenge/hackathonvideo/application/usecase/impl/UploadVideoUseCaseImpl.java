@@ -4,8 +4,8 @@ import br.com.fiap.techchallenge.hackathonvideo.application.exceptions.DoesNotEx
 import br.com.fiap.techchallenge.hackathonvideo.application.persistence.VideoPersistence;
 import br.com.fiap.techchallenge.hackathonvideo.application.usecase.UploadVideoUseCase;
 import br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.consumer.uploadvideo.dto.UploadVideoDTO;
-import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.producer.process.ProcessProducer;
-import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.producer.process.dto.VideoToProcessDTO;
+import br.com.fiap.techchallenge.hackathonvideo.application.producer.process.ProcessProducer;
+import br.com.fiap.techchallenge.hackathonvideo.application.producer.process.dto.VideoToProcessDTO;
 
 public class UploadVideoUseCaseImpl implements UploadVideoUseCase {
 

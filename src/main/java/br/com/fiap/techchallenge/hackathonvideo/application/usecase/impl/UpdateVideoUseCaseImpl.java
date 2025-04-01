@@ -5,8 +5,8 @@ import br.com.fiap.techchallenge.hackathonvideo.application.persistence.VideoPer
 import br.com.fiap.techchallenge.hackathonvideo.application.usecase.UpdateVideoUseCase;
 import br.com.fiap.techchallenge.hackathonvideo.domain.enums.ProcessStatus;
 import br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.consumer.updatevideo.dto.UpdateVideoDTO;
-import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.producer.notification.PushNotificationProducer;
-import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.producer.notification.dto.PushNotificationDTO;
+import br.com.fiap.techchallenge.hackathonvideo.application.producer.notification.PushNotificationProducer;
+import br.com.fiap.techchallenge.hackathonvideo.application.producer.notification.dto.PushNotificationDTO;
 
 public class UpdateVideoUseCaseImpl implements UpdateVideoUseCase {
 

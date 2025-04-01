@@ -1,4 +1,4 @@
-package br.com.fiap.techchallenge.hackathonvideo.infra.gateway.producer.notification.dto;
+package br.com.fiap.techchallenge.hackathonvideo.application.producer.notification.dto;
 
 import br.com.fiap.techchallenge.hackathonvideo.domain.enums.ProcessStatus;
 

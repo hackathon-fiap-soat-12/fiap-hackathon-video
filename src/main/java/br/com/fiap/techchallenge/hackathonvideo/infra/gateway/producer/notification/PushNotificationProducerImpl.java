@@ -1,7 +1,7 @@
-package br.com.fiap.techchallenge.hackathonvideo.infra.gateway.producer.notification.impl;
+package br.com.fiap.techchallenge.hackathonvideo.infra.gateway.producer.notification;
 
-import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.producer.notification.PushNotificationProducer;
-import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.producer.notification.dto.PushNotificationDTO;
+import br.com.fiap.techchallenge.hackathonvideo.application.producer.notification.PushNotificationProducer;
+import br.com.fiap.techchallenge.hackathonvideo.application.producer.notification.dto.PushNotificationDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.awspring.cloud.sqs.operations.SqsTemplate;
