@@ -25,13 +25,13 @@ public class SpringDocConfigurations {
 	@Bean
 	public OpenAPI customOpenAPI() {
 		return new OpenAPI().info(new Info().title("Hackathon FIAP API").version("v1").description("""
-				API Rest for Hackathon of Master's Degree in Software Architecture \n
-				Developed by:\n
-				 - Alexandre Miranda - RM357321\n
-				 - Diego Ceccon - RM357437\n
-				 - Jéssica Rodrigues - RM357218\n
-				 - Rodrigo Sartori - RM358002\n
-				 - Wilton Souza - RM357991\n
+				API Rest for Hackathon of Master's Degree in Software Architecture 
+				Developed by:
+				 - Alexandre Miranda - RM357321
+				 - Diego Ceccon - RM357437
+				 - Jéssica Rodrigues - RM357218
+				 - Rodrigo Sartori - RM358002
+				 - Wilton Souza - RM357991
 				""").contact(new Contact().name("SOAT 8 Group").email("soat-group@gmail.com")))
 			.components(new Components().schemas(this.generateSchemas()));
 	}

@@ -30,7 +30,7 @@ public class PaginatedResponse<T> {
     }
 
     private Map<String, Object> convertLastEvaluatedKey(Map<String, AttributeValue> exclusiveStartKey) {
-        if (exclusiveStartKey == null) return null;
+        if (exclusiveStartKey == null) return new HashMap<>();
 
         Map<String, Object> convertedKey = new HashMap<>();
         for (Map.Entry<String, AttributeValue> entry : exclusiveStartKey.entrySet()) {

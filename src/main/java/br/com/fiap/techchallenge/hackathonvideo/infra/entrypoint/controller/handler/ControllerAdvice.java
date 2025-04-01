@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class ControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(DoesNotExistException.class)
-	public ResponseEntity<?> notFound(RuntimeException ex) {
+	public ResponseEntity<ProblemDTO> notFound(RuntimeException ex) {
 		var error = new ProblemDTO(ex.getMessage(), LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
 	}
@@ -32,7 +32,7 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(DateTimeException.class)
-	public ResponseEntity<?> dateTimeException(DateTimeException ex) {
+	public ResponseEntity<ProblemDTO> dateTimeException(DateTimeException ex) {
 		var error = new ProblemDTO(ex.getMessage(), LocalDateTime.now());
 		return ResponseEntity.badRequest().body(error);
 	}
