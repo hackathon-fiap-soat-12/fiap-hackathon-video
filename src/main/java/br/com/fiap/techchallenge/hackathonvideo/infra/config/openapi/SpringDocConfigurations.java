@@ -25,7 +25,7 @@ public class SpringDocConfigurations {
 	@Bean
 	public OpenAPI customOpenAPI() {
 		return new OpenAPI().info(new Info().title("Hackathon FIAP API").version("v1").description("""
-				API Rest for Hackathon of Master's Degree in Software Architecture 
+				API Rest for Hackathon of Master's Degree in Software Architecture
 				Developed by:
 				 - Alexandre Miranda - RM357321
 				 - Diego Ceccon - RM357437
