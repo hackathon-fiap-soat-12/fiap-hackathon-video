@@ -42,16 +42,4 @@ aws --endpoint="$ENDPOINT" dynamodb create-table \
     --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
     --region us-east-1
 
-
-#aws --endpoint="$ENDPOINT"  dynamodb create-table \
-#    --table-name video_entity \
-#    --attribute-definitions \
-#        AttributeName=id,AttributeType=S \
-#    --key-schema \
-#        AttributeName=id,KeyType=HASH \
-#    --global-secondary-indexes \
-#        "IndexName=idIndex,KeySchema=[{AttributeName=id,KeyType=HASH}],Projection={ProjectionType=ALL},ProvisionedThroughput={ReadCapacityUnits=1,WriteCapacityUnits=1}" \
-#    --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
-#    --region us-east-1
-
 echo "DynamoDB criado com sucesso!"

@@ -3,6 +3,7 @@ package br.com.fiap.techchallenge.hackathonvideo.application.usecase.impl;
 import br.com.fiap.techchallenge.hackathonvideo.application.exceptions.DoesNotExistException;
 import br.com.fiap.techchallenge.hackathonvideo.application.persistence.VideoPersistence;
 import br.com.fiap.techchallenge.hackathonvideo.application.usecase.PresignedDownloadUseCase;
+import br.com.fiap.techchallenge.hackathonvideo.domain.enums.ProcessStatus;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.PresignedFile;
 import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.filestorage.FileService;
 import org.slf4j.Logger;
@@ -29,6 +30,22 @@ public class PresignedDownloadUseCaseImpl implements PresignedDownloadUseCase {
 
         logger.info("Presigned Download video id {} requested by user id {}", video.getId(), video.getUserId());
 
+        this.validateStatus(video.getStatus());
+
         return fileService.generateDownloadPresignedUrl(video);
+    }
+
+    private void validateStatus(ProcessStatus status) {
+        if(ProcessStatus.FAILED.equals(status)){
+            throw new DoesNotExistException("An error happened when processing the video, try processing again");
+        }
+
+        if(ProcessStatus.NEW.equals(status)){
+            throw new DoesNotExistException("The video has not yet been sent");
+        }
+
+        if(ProcessStatus.RECEIVED.equals(status) || ProcessStatus.PROCESSING.equals(status)){
+            throw new DoesNotExistException("The video is in processing");
+        }
     }
 }
