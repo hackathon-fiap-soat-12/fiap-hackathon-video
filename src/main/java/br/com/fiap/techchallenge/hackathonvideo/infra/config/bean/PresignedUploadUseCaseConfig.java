@@ -2,7 +2,7 @@ package br.com.fiap.techchallenge.hackathonvideo.infra.config.bean;
 
 import br.com.fiap.techchallenge.hackathonvideo.application.usecase.impl.PresignedUploadUseCaseImpl;
 import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.database.repository.impl.VideoPersistenceImpl;
-import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.filestorage.impl.FileServiceS3Impl;
+import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.filestorage.FileServiceS3Impl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

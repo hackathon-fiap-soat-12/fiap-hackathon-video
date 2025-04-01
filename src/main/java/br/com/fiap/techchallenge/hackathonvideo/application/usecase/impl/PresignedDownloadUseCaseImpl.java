@@ -5,7 +5,7 @@ import br.com.fiap.techchallenge.hackathonvideo.application.persistence.VideoPer
 import br.com.fiap.techchallenge.hackathonvideo.application.usecase.PresignedDownloadUseCase;
 import br.com.fiap.techchallenge.hackathonvideo.domain.enums.ProcessStatus;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.PresignedFile;
-import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.filestorage.FileService;
+import br.com.fiap.techchallenge.hackathonvideo.application.filestorage.FileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

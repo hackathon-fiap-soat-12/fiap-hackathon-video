@@ -6,7 +6,7 @@ import br.com.fiap.techchallenge.hackathonvideo.domain.models.PresignedFile;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.User;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
 import br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.controller.dto.PresignedUploadRequestDTO;
-import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.filestorage.FileService;
+import br.com.fiap.techchallenge.hackathonvideo.application.filestorage.FileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

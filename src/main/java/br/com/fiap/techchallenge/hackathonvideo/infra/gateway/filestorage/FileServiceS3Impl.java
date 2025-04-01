@@ -1,8 +1,8 @@
-package br.com.fiap.techchallenge.hackathonvideo.infra.gateway.filestorage.impl;
+package br.com.fiap.techchallenge.hackathonvideo.infra.gateway.filestorage;
 
+import br.com.fiap.techchallenge.hackathonvideo.application.filestorage.FileService;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.PresignedFile;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
-import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.filestorage.FileService;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
