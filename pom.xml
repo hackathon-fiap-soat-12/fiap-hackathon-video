@@ -28,6 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<sonar.exclusions> **/ObjectMapperConfig.java, **/JacksonConfig.java, **/AwsSqsConfig.java, **/AwsS3Config.java, **/AwsS3Config.java, **/AwsDynamoDbConfig.java, **/SpringDocConfigurations.java, **/ErrorsValidateData.java, **/HackathonvideoApplication.java</sonar.exclusions>
 	</properties>
 	<dependencies>
 		<!-- Spring Boot -->
@@ -148,6 +149,13 @@
 				<configuration>
 					<excludes>
 						<exclude>**/HackathonvideoApplication.class</exclude>
+						<exclude>**/ObjectMapperConfig.class</exclude>
+						<exclude>**/JacksonConfig.class</exclude>
+						<exclude>**/AwsSqsConfig.class</exclude>
+						<exclude>**/AwsS3Config.class</exclude>
+						<exclude>**/AwsDynamoDbConfig.class</exclude>
+						<exclude>**/SpringDocConfigurations.class</exclude>
+						<exclude>**/ErrorsValidateData.class</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
