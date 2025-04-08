@@ -15,6 +15,7 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequ
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.UUID;
 
@@ -85,7 +86,7 @@ class FileServiceS3ImplTest {
 
     private URL generateFakeUrl() {
         try {
-            return new URL("https://example.com/fake-url");
+            return URI.create("https://example.com/fake-url").toURL();
         } catch (Exception e) {
             throw new RuntimeException("Failed to create fake URL");
         }
