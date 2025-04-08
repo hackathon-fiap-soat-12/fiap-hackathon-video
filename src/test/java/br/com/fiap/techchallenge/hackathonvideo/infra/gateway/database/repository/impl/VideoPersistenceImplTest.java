@@ -108,9 +108,8 @@ class VideoPersistenceImplTest {
     void testParseExclusiveStartKey_InvalidJson_ThrowsException() {
         String invalidJson = "invalid-json";
 
-        Exception ex = assertThrows(Exception.class, () -> {
-            videoPersistence.findAllByUserId(UUID.randomUUID(), 10, invalidJson);
-        });
+        Exception ex = assertThrows(Exception.class, () ->
+                videoPersistence.findAllByUserId(UUID.randomUUID(), 10, invalidJson));
 
         assertTrue(ex.getMessage().contains("Erro ao converter exclusiveStartKey"));
     }
@@ -147,9 +146,8 @@ class VideoPersistenceImplTest {
 
         VideoPersistenceImpl videoPersistenceWithMock = new VideoPersistenceImpl(mockedObjectMapper, repository);
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
-            videoPersistenceWithMock.convertLastEvaluatedKeyToString(lastEvaluatedKey);
-        });
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
+                videoPersistenceWithMock.convertLastEvaluatedKeyToString(lastEvaluatedKey));
 
         assertTrue(ex.getMessage().contains("Erro ao converter LastEvaluatedKey para String"));
     }
