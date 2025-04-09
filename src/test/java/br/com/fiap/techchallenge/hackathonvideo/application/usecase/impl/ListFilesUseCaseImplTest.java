@@ -3,6 +3,7 @@ package br.com.fiap.techchallenge.hackathonvideo.application.usecase.impl;
 import br.com.fiap.techchallenge.hackathonvideo.application.persistence.VideoPersistence;
 import br.com.fiap.techchallenge.hackathonvideo.domain.enums.ProcessStatus;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Audit;
+import br.com.fiap.techchallenge.hackathonvideo.domain.models.Metadata;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.User;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.pageable.CustomPage;
@@ -35,14 +36,15 @@ class ListFilesUseCaseImplTest {
 
         User user = new User(userId, "usuario@exemplo.com");
         Audit audit = new Audit(LocalDateTime.now().minusDays(1), LocalDateTime.now());
+        Metadata metadata = new Metadata("video1", 10, 100L);
 
         Video video1 = new Video(
-                UUID.randomUUID(), user, "video1.mp4", "frames1.zip", "video1",
-                ProcessStatus.NEW, audit
+                UUID.randomUUID(), user, "video1.mp4", "frames1.zip",
+                ProcessStatus.NEW, audit, metadata
         );
         Video video2 = new Video(
-                UUID.randomUUID(), user, "video2.mp4", "frames2.zip", "video2",
-                ProcessStatus.PROCESSING, audit
+                UUID.randomUUID(), user, "video2.mp4", "frames2.zip",
+                ProcessStatus.PROCESSING, audit, metadata
         );
 
         List<Video> videos = List.of(video1, video2);

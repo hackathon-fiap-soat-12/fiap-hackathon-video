@@ -24,6 +24,7 @@ public class UpdateVideoUseCaseImpl implements UpdateVideoUseCase {
                 .orElseThrow(() -> new DoesNotExistException("Video not found"));
 
         video.setStatus(updateVideoDto.status());
+        video.updateMetaData(updateVideoDto.qtdFrames(), updateVideoDto.sizeInBytes());
 
         videoPersistence.update(video);
 

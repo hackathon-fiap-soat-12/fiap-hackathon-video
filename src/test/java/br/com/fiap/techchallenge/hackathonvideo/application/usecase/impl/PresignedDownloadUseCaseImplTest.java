@@ -36,8 +36,8 @@ class PresignedDownloadUseCaseImplTest {
         String email = "test@email.com";
 
         User user = new User(userId, email);
-        Video video = new Video(videoId, user, "videoKey", "framesKey", "video.mp4",
-                ProcessStatus.PROCESSED, new Audit(Instant.now().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime(), Instant.now().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime()));
+        Video video = new Video(videoId, user, "videoKey", "framesKey",
+                ProcessStatus.PROCESSED, new Audit(Instant.now().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime(), Instant.now().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime()), new Metadata("video.mp4", 10, 100L));
 
         PresignedFile presignedFile = new PresignedFile(videoId, "https://example.com", null, Instant.now().plusSeconds(3600));
 
@@ -91,8 +91,8 @@ class PresignedDownloadUseCaseImplTest {
         String email = "test@email.com";
         User user = new User(userId, email);
 
-        Video video = new Video(videoId, user, "videoKey", "framesKey", "video.mp4",
-                status, new Audit(Instant.now().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime(), Instant.now().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime()));
+        Video video = new Video(videoId, user, "videoKey", "framesKey",
+                status, new Audit(Instant.now().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime(), Instant.now().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime()), new Metadata("video.mp4", 10, 100L));
 
         when(videoPersistence.findById(videoId)).thenReturn(Optional.of(video));
 

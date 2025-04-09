@@ -13,35 +13,36 @@ public class Video {
 
     private final User user;
 
-    private final String videoName;
-
     private final String videoKey;
 
     private final String framesKey;
 
     private ProcessStatus status;
 
+    private final Metadata metadata;
+
     private final Audit audit;
 
-    public Video(UUID id, User user, String videoKey, String framesKey, String videoName,
-                 ProcessStatus status, Audit audit) {
+
+    public Video(UUID id, User user, String videoKey, String framesKey,
+                 ProcessStatus status, Audit audit, Metadata metadata) {
         this.id = id;
         this.user = user;
-        this.videoName = videoName;
         this.videoKey = videoKey;
         this.framesKey = framesKey;
         this.status = status;
         this.audit = audit;
+        this.metadata = metadata;
     }
 
     public Video(String videoName, User user) {
         this.id = UUID.randomUUID();
         this.user = user;
-        this.videoName = videoName;
         this.videoKey = PATH_VIDEO + videoName;
         this.framesKey = PATH_FRAMES + videoName + ".zip";
         this.status = ProcessStatus.NEW;
         this.audit = new Audit(LocalDateTime.now(), LocalDateTime.now());
+        this.metadata = new Metadata(videoName);
     }
 
     public UUID getId() {
@@ -61,7 +62,7 @@ public class Video {
     }
 
     public String getVideoName() {
-        return videoName;
+        return this.metadata.getVideoName();
     }
 
     public String getVideoKey() {
@@ -92,5 +93,17 @@ public class Video {
     public void setReceived() {
         this.status = ProcessStatus.RECEIVED;
         audit.setUpdatedAt(LocalDateTime.now());
+    }
+
+    public void updateMetaData(Integer qtdFrames, Long sizeInBytes) {
+        this.metadata.updateMetadata(qtdFrames, sizeInBytes);
+    }
+
+    public Integer getQtdFrames() {
+        return this.metadata.getQtdFrames();
+    }
+
+    public Long getSizeInBytes() {
+        return this.metadata.getSizeInBytes();
     }
 }

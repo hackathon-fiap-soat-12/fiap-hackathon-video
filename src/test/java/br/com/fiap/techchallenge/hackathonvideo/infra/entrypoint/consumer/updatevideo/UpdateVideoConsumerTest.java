@@ -49,6 +49,6 @@ class UpdateVideoConsumerTest {
     }
 
     private void buildArranges(){
-        updateVideoDTO = new UpdateVideoDTO(UUID.randomUUID(), ProcessStatus.PROCESSING);
+        updateVideoDTO = new UpdateVideoDTO(UUID.randomUUID(), ProcessStatus.PROCESSING, 10, 100L);
     }
 }

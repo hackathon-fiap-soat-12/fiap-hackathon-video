@@ -2,6 +2,7 @@ package br.com.fiap.techchallenge.hackathonvideo.infra.gateway.database.entities
 
 import br.com.fiap.techchallenge.hackathonvideo.domain.enums.ProcessStatus;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Audit;
+import br.com.fiap.techchallenge.hackathonvideo.domain.models.Metadata;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.User;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
@@ -28,6 +29,10 @@ public class VideoEntity {
     private String videoKey;
 
     private String framesKey;
+
+    private Integer qtdFrames;
+
+    private Long sizeInBytes;
 
     private ProcessStatus status;
 
@@ -56,6 +61,8 @@ public class VideoEntity {
         this.videoKey = video.getVideoKey();
         this.framesKey = video.getFramesKey();
         this.status = video.getStatus();
+        this.qtdFrames = video.getQtdFrames();
+        this.sizeInBytes = video.getSizeInBytes();
         this.createdAt = video.getCreatedAt();
         this.updatedAt = video.getUpdatedAt();
     }
@@ -143,15 +150,31 @@ public class VideoEntity {
         this.updatedAt = updatedAt;
     }
 
+    public Integer getQtdFrames() {
+        return qtdFrames;
+    }
+
+    public void setQtdFrames(Integer qtdFrames) {
+        this.qtdFrames = qtdFrames;
+    }
+
+    public Long getSizeInBytes() {
+        return sizeInBytes;
+    }
+
+    public void setSizeInBytes(Long sizeInBytes) {
+        this.sizeInBytes = sizeInBytes;
+    }
+
     public Video toModel() {
         return new Video(
                 this.id,
                 new User(this.userId, this.userEmail),
                 this.videoKey,
                 this.framesKey,
-                this.videoName,
                 this.status,
-                new Audit(this.createdAt, this.updatedAt)
+                new Audit(this.createdAt, this.updatedAt),
+                new Metadata(this.videoName, this.qtdFrames, this.sizeInBytes)
         );
     }
 }

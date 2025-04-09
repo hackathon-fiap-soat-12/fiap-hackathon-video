@@ -6,6 +6,7 @@ import br.com.fiap.techchallenge.hackathonvideo.application.producer.notificatio
 import br.com.fiap.techchallenge.hackathonvideo.application.producer.notification.dto.PushNotificationDTO;
 import br.com.fiap.techchallenge.hackathonvideo.domain.enums.ProcessStatus;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Audit;
+import br.com.fiap.techchallenge.hackathonvideo.domain.models.Metadata;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.User;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
 import br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.consumer.updatevideo.dto.UpdateVideoDTO;
@@ -38,8 +39,8 @@ class UpdateVideoUseCaseImplTest {
         UUID videoId = UUID.randomUUID();
         ProcessStatus newStatus = ProcessStatus.RECEIVED;
         User user = new User(UUID.randomUUID(), "usuario@teste.com");
-        Video video = new Video(videoId, user, "videoKey", "framesKey", "meuVideo.mp4", ProcessStatus.NEW, new Audit(LocalDateTime.now(), LocalDateTime.now()));
-        UpdateVideoDTO dto = new UpdateVideoDTO(videoId, newStatus);
+        Video video = new Video(videoId, user, "videoKey", "framesKey", ProcessStatus.NEW, new Audit(LocalDateTime.now(), LocalDateTime.now()), new Metadata("meuVideo.mp4", 10, 100L));
+        UpdateVideoDTO dto = new UpdateVideoDTO(videoId, newStatus, video.getQtdFrames(), video.getSizeInBytes());
 
         when(videoPersistence.findById(videoId)).thenReturn(Optional.of(video));
 
@@ -60,8 +61,8 @@ class UpdateVideoUseCaseImplTest {
         UUID videoId = UUID.randomUUID();
         ProcessStatus newStatus = ProcessStatus.PROCESSING;
         User user = new User(UUID.randomUUID(), "usuario@teste.com");
-        Video video = new Video(videoId, user, "videoKey", "framesKey", "video.mp4", ProcessStatus.NEW, new Audit(LocalDateTime.now(), LocalDateTime.now()));
-        UpdateVideoDTO dto = new UpdateVideoDTO(videoId, newStatus);
+        Video video = new Video(videoId, user, "videoKey", "framesKey", ProcessStatus.NEW, new Audit(LocalDateTime.now(), LocalDateTime.now()), new Metadata("video.mp4", 10, 100L));
+        UpdateVideoDTO dto = new UpdateVideoDTO(videoId, newStatus, video.getQtdFrames(), video.getSizeInBytes());
 
         when(videoPersistence.findById(videoId)).thenReturn(Optional.of(video));
 
@@ -74,7 +75,7 @@ class UpdateVideoUseCaseImplTest {
     @Test
     void shouldThrowExceptionWhenVideoIsNotFound() {
         UUID videoId = UUID.randomUUID();
-        UpdateVideoDTO dto = new UpdateVideoDTO(videoId, ProcessStatus.RECEIVED);
+        UpdateVideoDTO dto = new UpdateVideoDTO(videoId, ProcessStatus.RECEIVED, 10, 100L);
 
         when(videoPersistence.findById(videoId)).thenReturn(Optional.empty());
 
