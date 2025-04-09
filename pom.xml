@@ -28,7 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
-		<sonar.exclusions> **/ObjectMapperConfig.java, **/JacksonConfig.java, **/AwsSqsConfig.java, **/AwsS3Config.java, **/AwsS3Config.java, **/AwsDynamoDbConfig.java, **/SpringDocConfigurations.java, **/ErrorsValidateData.java, **/HackathonvideoApplication.java</sonar.exclusions>
+		<sonar.exclusions> **/ObjectMapperConfig.java, **/JacksonConfig.java, **/AwsSqsConfig.java, **/AwsSqsConfigLocal.java, **/AwsS3Config.java, **/AwsS3ConfigLocal.java, **/AwsDynamoDbConfig.java, **/AwsDynamoDbConfigLocal.java, **/SpringDocConfigurations.java, **/ErrorsValidateData.java, **/HackathonvideoApplication.java</sonar.exclusions>
 	</properties>
 	<dependencies>
 		<!-- Spring Boot -->
@@ -154,6 +154,9 @@
 						<exclude>**/AwsSqsConfig.class</exclude>
 						<exclude>**/AwsS3Config.class</exclude>
 						<exclude>**/AwsDynamoDbConfig.class</exclude>
+						<exclude>**/AwsSqsConfigLocal.class</exclude>
+						<exclude>**/AwsS3ConfigLocal.class</exclude>
+						<exclude>**/AwsDynamoDbConfigLocal.class</exclude>
 						<exclude>**/SpringDocConfigurations.class</exclude>
 						<exclude>**/ErrorsValidateData.class</exclude>
 					</excludes>
