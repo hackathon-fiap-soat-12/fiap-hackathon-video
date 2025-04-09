@@ -2,6 +2,7 @@ package br.com.fiap.techchallenge.hackathonvideo.infra.gateway.database.reposito
 
 import br.com.fiap.techchallenge.hackathonvideo.domain.enums.ProcessStatus;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Audit;
+import br.com.fiap.techchallenge.hackathonvideo.domain.models.Metadata;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.User;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.pageable.CustomPage;
@@ -176,9 +177,9 @@ class VideoPersistenceImplTest {
                 new User(UUID.randomUUID(), "test@email.com"),
                 "videoKey",
                 "framesKey",
-                "videoName.mp4",
                 ProcessStatus.NEW,
-                new Audit(LocalDateTime.now(), LocalDateTime.now())
+                new Audit(LocalDateTime.now(), LocalDateTime.now()),
+                new Metadata("video.mp4", 10, 100L)
         );
     }
 }

@@ -27,6 +27,7 @@ public class UpdateVideoConsumer {
         var updateVideoDTO = objectMapper.readValue(message, UpdateVideoDTO.class);
 
         logger.info("Received Update Status {} for id {}", updateVideoDTO.status(), updateVideoDTO.id());
+        logger.info("New Fields qtdFrames -> {} sizeInMB -> {}", updateVideoDTO.qtdFrames(), updateVideoDTO.sizeInBytes());
 
         updateVideoUseCase.updateVideo(updateVideoDTO);
     }

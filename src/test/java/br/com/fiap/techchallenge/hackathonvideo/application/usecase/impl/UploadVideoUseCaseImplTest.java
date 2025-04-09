@@ -6,6 +6,7 @@ import br.com.fiap.techchallenge.hackathonvideo.application.producer.process.Pro
 import br.com.fiap.techchallenge.hackathonvideo.application.producer.process.dto.VideoToProcessDTO;
 import br.com.fiap.techchallenge.hackathonvideo.domain.enums.ProcessStatus;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Audit;
+import br.com.fiap.techchallenge.hackathonvideo.domain.models.Metadata;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.User;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
 import br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.consumer.uploadvideo.dto.UploadVideoDTO;
@@ -37,7 +38,7 @@ class UploadVideoUseCaseImplTest {
     void shouldReceiveVideoAndSendToProcess() {
         UUID videoId = UUID.randomUUID();
         User user = new User(UUID.randomUUID(), "user@example.com");
-        Video video = new Video(videoId, user, "videoKey", "framesKey", "video.mp4", ProcessStatus.NEW, new Audit(LocalDateTime.now(), LocalDateTime.now()));
+        Video video = new Video(videoId, user, "videoKey", "framesKey", ProcessStatus.NEW, new Audit(LocalDateTime.now(), LocalDateTime.now()), new Metadata("video.mp4", 10, 100L));
         UploadVideoDTO dto = new UploadVideoDTO(videoId);
 
         when(videoPersistence.findById(videoId)).thenReturn(Optional.of(video));
