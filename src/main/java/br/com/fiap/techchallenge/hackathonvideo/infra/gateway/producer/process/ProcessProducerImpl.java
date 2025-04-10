@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProcessProducerImpl implements ProcessProducer {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProcessProducerImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessProducerImpl.class);
 
     @Value("${sqs.queue.video.process.producer}")
     private String processQueue;
@@ -31,9 +31,9 @@ public class ProcessProducerImpl implements ProcessProducer {
         try {
             sqsTemplate.send(processQueue, objectMapper.writeValueAsString(dto));
 
-            logger.info("Sent video id {} to process", dto.id());
+            LOGGER.info("Sent video id {} to process", dto.id());
         } catch (JsonProcessingException e) {
-            logger.error("Error on send video {} to process", dto.id());
+            LOGGER.error("Error on send video {} to process", dto.id());
         }
     }
 }

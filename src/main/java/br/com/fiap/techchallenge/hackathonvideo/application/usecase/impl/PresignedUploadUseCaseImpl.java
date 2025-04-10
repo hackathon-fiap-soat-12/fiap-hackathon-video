@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class PresignedUploadUseCaseImpl implements PresignedUploadUseCase {
 
-    private static final Logger logger = LoggerFactory.getLogger(PresignedUploadUseCaseImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PresignedUploadUseCaseImpl.class);
 
     private final VideoPersistence videoPersistence;
     private final FileService fileService;
@@ -28,7 +28,7 @@ public class PresignedUploadUseCaseImpl implements PresignedUploadUseCase {
     public PresignedFile presignedUpload(PresignedUploadRequestDTO dto, UUID userId, String email) {
         var video = videoPersistence.save(new Video(dto.fileName(), new User(userId, email)));
 
-        logger.info("Presigned Upload video id {} requested by user id {}", video.getId(), userId);
+        LOGGER.info("Presigned Upload video id {} requested by user id {}", video.getId(), userId);
 
         return fileService.generateUploadPresignedUrl(video, dto.fileType());
     }

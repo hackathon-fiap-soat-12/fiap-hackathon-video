@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UploadVideoConsumer {
 
-    private static final Logger logger = LoggerFactory.getLogger(UploadVideoConsumer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UploadVideoConsumer.class);
 
     private final UploadVideoUseCase uploadVideoUseCase;
     private final ObjectMapper objectMapper;
@@ -26,7 +26,7 @@ public class UploadVideoConsumer {
     public void receiveMessage(String message) throws JsonProcessingException {
         var uploadVideoDTO = objectMapper.readValue(message, UploadVideoDTO.class);
 
-        logger.info("Received Upload Video for id {}", uploadVideoDTO.id());
+        LOGGER.info("Received Upload Video for id {}", uploadVideoDTO.id());
 
         uploadVideoUseCase.receiveToProcess(uploadVideoDTO);
     }

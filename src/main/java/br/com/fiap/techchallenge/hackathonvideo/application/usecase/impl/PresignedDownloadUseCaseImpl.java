@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class PresignedDownloadUseCaseImpl implements PresignedDownloadUseCase {
 
-    private static final Logger logger = LoggerFactory.getLogger(PresignedDownloadUseCaseImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PresignedDownloadUseCaseImpl.class);
 
     private final VideoPersistence videoPersistence;
     private final FileService fileService;
@@ -28,7 +28,7 @@ public class PresignedDownloadUseCaseImpl implements PresignedDownloadUseCase {
         var video = videoPersistence.findById(id)
                 .orElseThrow(() -> new DoesNotExistException("Zip File not found"));
 
-        logger.info("Presigned Download video id {} requested by user id {}", video.getId(), video.getUserId());
+        LOGGER.info("Presigned Download video id {} requested by user id {}", video.getId(), video.getUserId());
 
         this.validateStatus(video.getStatus());
 

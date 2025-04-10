@@ -7,6 +7,7 @@ import br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.controller.dto.
 import br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.controller.openapi.VideoControllerOpenApi;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,7 +42,7 @@ public class VideoController implements VideoControllerOpenApi {
     }
 
     @Override
-    @GetMapping("/files/{id}/presigned-download")
+    @GetMapping(value = "/files/{id}/presigned-download", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PresignedDownloadResponseDTO> presignedDownload(@PathVariable("id") UUID id){
 
         var presignedFile = presignedDownloadUseCase.presignedDownload(id);
@@ -50,7 +51,7 @@ public class VideoController implements VideoControllerOpenApi {
     }
 
     @Override
-    @GetMapping("/files")
+    @GetMapping(value = "/files", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ListFilesResponseDTO> getFiles(@RequestParam(value = "user_id") UUID userId,
                                                @RequestParam Integer pageSize,
                                                @RequestParam(required = false) String exclusiveStartKey){
