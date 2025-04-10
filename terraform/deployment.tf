@@ -154,7 +154,7 @@ resource "kubernetes_deployment" "video_deployment" {
 
           env {
             name = "OTEL_JAVAAGENT_DEBUG"
-            value = "true"
+            value = "false"
           }
 
           env {
