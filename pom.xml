@@ -28,7 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
-		<sonar.exclusions> **/ObjectMapperConfig.java, **/JacksonConfig.java, **/AwsSqsConfig.java, **/AwsSqsConfigLocal.java, **/AwsS3Config.java, **/AwsS3ConfigLocal.java, **/AwsDynamoDbConfig.java, **/AwsDynamoDbConfigLocal.java, **/SpringDocConfigurations.java, **/ErrorsValidateData.java, **/HackathonvideoApplication.java</sonar.exclusions>
+		<sonar.exclusions>**/NoSniffHeaderFilter.java, **/ObjectMapperConfig.java, **/JacksonConfig.java, **/AwsSqsConfig.java, **/AwsSqsConfigLocal.java, **/AwsS3Config.java, **/AwsS3ConfigLocal.java, **/AwsDynamoDbConfig.java, **/AwsDynamoDbConfigLocal.java, **/SpringDocConfigurations.java, **/ErrorsValidateData.java, **/HackathonvideoApplication.java</sonar.exclusions>
 	</properties>
 	<dependencies>
 		<!-- Spring Boot -->
@@ -102,6 +102,8 @@
 			<groupId>io.opentelemetry</groupId>
 			<artifactId>opentelemetry-api</artifactId>
 		</dependency>
+
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -124,8 +126,46 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>3.5.0</version>
+				<dependencies>
+					<dependency>
+						<groupId>com.puppycrawl.tools</groupId>
+						<artifactId>checkstyle</artifactId>
+						<version>10.18.0</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>validate</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<logViolationsToConsole>true</logViolationsToConsole>
+					<configLocation>checkstyle/checkstyle.xml</configLocation>
+					<consoleOutput>true</consoleOutput>
+					<sourceDirectories>${basedir}/src/main/java</sourceDirectories>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>

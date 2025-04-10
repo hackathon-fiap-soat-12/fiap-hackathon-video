@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PushNotificationProducerImpl implements PushNotificationProducer {
 
-    private static final Logger logger = LoggerFactory.getLogger(PushNotificationProducerImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PushNotificationProducerImpl.class);
 
     @Value("${sqs.queue.notification.push.producer}")
     private String notificationPushQueue;
@@ -31,9 +31,9 @@ public class PushNotificationProducerImpl implements PushNotificationProducer {
         try {
             sqsTemplate.send(notificationPushQueue, objectMapper.writeValueAsString(dto));
 
-            logger.info("Sent video to push notification with status {}", dto.status());
+            LOGGER.info("Sent video to push notification with status {}", dto.status());
         } catch (JsonProcessingException e) {
-            logger.error("Error on push notification for video {}", dto.videoName());
+            LOGGER.error("Error on push notification for video {}", dto.videoName());
         }
     }
 }
