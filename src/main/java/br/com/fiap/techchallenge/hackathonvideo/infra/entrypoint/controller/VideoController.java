@@ -51,7 +51,7 @@ public class VideoController implements VideoControllerOpenApi {
 
     @Override
     @GetMapping("/files")
-    public ResponseEntity<ListFilesResponseDTO> getFiles(@RequestParam(value = "user_id") UUID userId,
+    public ResponseEntity<ListFilesResponseDTO> getFiles(@RequestHeader(value = "user_id") UUID userId,
                                                @RequestParam Integer pageSize,
                                                @RequestParam(required = false) String exclusiveStartKey){
 
