@@ -5,7 +5,9 @@ import br.com.fiap.techchallenge.hackathonvideo.domain.enums.ProcessStatus;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static br.com.fiap.techchallenge.hackathonvideo.domain.constants.Constants.*;
+import static br.com.fiap.techchallenge.hackathonvideo.domain.constants.Constants.PATH_FRAMES;
+import static br.com.fiap.techchallenge.hackathonvideo.domain.constants.Constants.PATH_VIDEO;
+import static br.com.fiap.techchallenge.hackathonvideo.domain.constants.Constants.BUCKET_NAME;
 
 public class Video {
 
