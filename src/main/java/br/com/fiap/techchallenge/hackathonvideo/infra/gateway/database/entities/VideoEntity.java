@@ -52,7 +52,7 @@ public class VideoEntity {
         return this;
     }
 
-    private void assignItems(Video video){
+    private void assignItems(Video video) {
         this.id = video.getId();
         this.userId = video.getUserId();
         this.userEmail = video.getUserEmail();

@@ -19,6 +19,7 @@ import static br.com.fiap.techchallenge.hackathonvideo.domain.enums.PresignedMet
 public class FileServiceS3Impl implements FileService {
 
     private final S3Presigner s3Presigner;
+    private static final int MINUTES = 5;
 
     public FileServiceS3Impl(S3Presigner s3Presigner) {
         this.s3Presigner = s3Presigner;
@@ -31,7 +32,7 @@ public class FileServiceS3Impl implements FileService {
 
         var presignedPutRequest = s3Presigner.presignPutObject(
                 PutObjectPresignRequest.builder()
-                        .signatureDuration(Duration.ofMinutes(5))
+                        .signatureDuration(Duration.ofMinutes(MINUTES))
                         .putObjectRequest(b -> b.bucket(video.getBucketName()).key(video.getVideoKey()).metadata(metadata))
                         .build()
         );
@@ -43,7 +44,7 @@ public class FileServiceS3Impl implements FileService {
     public PresignedFile generateDownloadPresignedUrl(Video video) {
         var presignedGetRequest = s3Presigner.presignGetObject(
                 GetObjectPresignRequest.builder()
-                        .signatureDuration(Duration.ofMinutes(5))
+                        .signatureDuration(Duration.ofMinutes(MINUTES))
                         .getObjectRequest(b -> b.bucket(video.getBucketName()).key(video.getFramesKey()))
                         .build()
         );
