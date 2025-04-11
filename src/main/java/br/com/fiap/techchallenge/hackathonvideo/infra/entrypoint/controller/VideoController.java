@@ -15,6 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1")
+@CrossOrigin("*")
 public class VideoController implements VideoControllerOpenApi {
 
     private final PresignedUploadUseCase presignedUploadUseCase;
