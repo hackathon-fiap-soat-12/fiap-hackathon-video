@@ -63,7 +63,7 @@ public class VideoPersistenceImpl implements VideoPersistence {
 
     private Map<String, AttributeValue> parseExclusiveStartKey(String exclusiveStartKeyJson) {
         try {
-            Map<String, String> stringMap = objectMapper.readValue(exclusiveStartKeyJson, new TypeReference<Map<String, String>>() { });
+            Map<String, String> stringMap = objectMapper.readValue(exclusiveStartKeyJson, new TypeReference<>() { });
 
             return stringMap.entrySet()
                     .stream()
