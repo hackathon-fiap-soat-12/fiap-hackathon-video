@@ -33,8 +33,8 @@ public class VideoController implements VideoControllerOpenApi {
     @Override
     @PostMapping("/presigned-upload")
     public ResponseEntity<PresignedUploadResponseDTO> presignedUpload(@RequestBody @Valid PresignedUploadRequestDTO dto,
-                                                                      @RequestHeader("user_id") UUID userId,
-                                                                      @RequestHeader("email") String email){
+                                                                      @RequestHeader("x-user-id") UUID userId,
+                                                                      @RequestHeader("x-user-email") String email){
 
         var presignedFile = presignedUploadUseCase.presignedUpload(dto, userId, email);
 
@@ -52,7 +52,7 @@ public class VideoController implements VideoControllerOpenApi {
 
     @Override
     @GetMapping(value = "/files", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ListFilesResponseDTO> getFiles(@RequestHeader(value = "user_id") UUID userId,
+    public ResponseEntity<ListFilesResponseDTO> getFiles(@RequestHeader(value = "x-user-id") UUID userId,
                                                @RequestParam Integer pageSize,
                                                @RequestParam(required = false) String exclusiveStartKey){
 
