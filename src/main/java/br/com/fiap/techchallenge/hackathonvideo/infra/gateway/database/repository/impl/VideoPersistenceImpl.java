@@ -5,6 +5,7 @@ import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.pageable.CustomPage;
 import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.database.entities.VideoEntity;
 import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.database.repository.VideoRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Repository;
@@ -62,7 +63,7 @@ public class VideoPersistenceImpl implements VideoPersistence {
 
     private Map<String, AttributeValue> parseExclusiveStartKey(String exclusiveStartKeyJson) {
         try {
-            Map<String, String> stringMap = objectMapper.readValue(exclusiveStartKeyJson, new TypeReference<Map<String, String>>() {});
+            Map<String, String> stringMap = objectMapper.readValue(exclusiveStartKeyJson, new TypeReference<>() { });
 
             return stringMap.entrySet()
                     .stream()
@@ -70,7 +71,7 @@ public class VideoPersistenceImpl implements VideoPersistence {
                             Map.Entry::getKey,
                             entry -> AttributeValue.builder().s(entry.getValue()).build()
                     ));
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Erro ao converter exclusiveStartKey para Map<String, AttributeValue>", e);
         }
     }
@@ -87,7 +88,7 @@ public class VideoPersistenceImpl implements VideoPersistence {
                             entry -> entry.getValue().s() != null ? entry.getValue().s() : entry.getValue().n()
                     ));
             return objectMapper.writeValueAsString(keyAsStringMap);
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Erro ao converter LastEvaluatedKey para String", e);
         }
     }

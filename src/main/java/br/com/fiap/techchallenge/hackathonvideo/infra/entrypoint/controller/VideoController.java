@@ -35,7 +35,7 @@ public class VideoController implements VideoControllerOpenApi {
     @PostMapping("/presigned-upload")
     public ResponseEntity<PresignedUploadResponseDTO> presignedUpload(@RequestBody @Valid PresignedUploadRequestDTO dto,
                                                                       @RequestHeader("x-user-id") UUID userId,
-                                                                      @RequestHeader("x-user-email") String email){
+                                                                      @RequestHeader("x-user-email") String email) {
 
         var presignedFile = presignedUploadUseCase.presignedUpload(dto, userId, email);
 
@@ -44,7 +44,7 @@ public class VideoController implements VideoControllerOpenApi {
 
     @Override
     @GetMapping(value = "/files/{id}/presigned-download", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PresignedDownloadResponseDTO> presignedDownload(@PathVariable("id") UUID id){
+    public ResponseEntity<PresignedDownloadResponseDTO> presignedDownload(@PathVariable("id") UUID id) {
 
         var presignedFile = presignedDownloadUseCase.presignedDownload(id);
 
@@ -55,7 +55,7 @@ public class VideoController implements VideoControllerOpenApi {
     @GetMapping(value = "/files", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ListFilesResponseDTO> getFiles(@RequestHeader(value = "x-user-id") UUID userId,
                                                @RequestParam Integer pageSize,
-                                               @RequestParam(required = false) String exclusiveStartKey){
+                                               @RequestParam(required = false) String exclusiveStartKey) {
 
         var customPage = listFilesUseCase.getFiles(userId, pageSize, exclusiveStartKey);
 

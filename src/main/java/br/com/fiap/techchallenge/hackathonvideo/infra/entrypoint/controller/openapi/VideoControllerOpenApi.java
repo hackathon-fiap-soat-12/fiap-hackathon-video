@@ -37,7 +37,7 @@ public interface VideoControllerOpenApi {
             content = @Content(mediaType = "application/json", schema = @Schema(ref = "ProblemDto")))
     @ApiResponse(responseCode = "500", description = "Internal Server Error Response",
             content = @Content(mediaType = "application/json", schema = @Schema(ref = "ProblemDto")))
-    ResponseEntity<PresignedDownloadResponseDTO> presignedDownload(@Schema(example = "4f2da442-81d6-47d9-bfbb-3b525c6f0606")  UUID id);
+    ResponseEntity<PresignedDownloadResponseDTO> presignedDownload(@Schema(example = "4f2da442-81d6-47d9-bfbb-3b525c6f0606") UUID id);
 
     @Operation(summary = "Find a List of files by user id")
     @ApiResponse(responseCode = "200", description = "Ok Response",

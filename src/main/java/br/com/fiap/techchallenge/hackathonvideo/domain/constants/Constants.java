@@ -6,5 +6,5 @@ public class Constants {
     public static final String PATH_VIDEO = BUCKET_NAME + PATH_BASE + "videos/";
     public static final String PATH_FRAMES = BUCKET_NAME + PATH_BASE + "frames/";
 
-    private Constants() {}
+    private Constants() { }
 }

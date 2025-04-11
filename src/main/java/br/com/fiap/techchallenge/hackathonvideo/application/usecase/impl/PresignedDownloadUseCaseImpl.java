@@ -36,15 +36,15 @@ public class PresignedDownloadUseCaseImpl implements PresignedDownloadUseCase {
     }
 
     private void validateStatus(ProcessStatus status) {
-        if(ProcessStatus.FAILED.equals(status)){
+        if (ProcessStatus.FAILED.equals(status)) {
             throw new DoesNotExistException("An error happened when processing the video, try processing again");
         }
 
-        if(ProcessStatus.NEW.equals(status)){
+        if (ProcessStatus.NEW.equals(status)) {
             throw new DoesNotExistException("The video has not yet been sent");
         }
 
-        if(ProcessStatus.RECEIVED.equals(status) || ProcessStatus.PROCESSING.equals(status)){
+        if (ProcessStatus.RECEIVED.equals(status) || ProcessStatus.PROCESSING.equals(status)) {
             throw new DoesNotExistException("The video is in processing");
         }
     }
