@@ -4,6 +4,7 @@ import br.com.fiap.techchallenge.hackathonvideo.domain.enums.PresignedMethods;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.User;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -50,7 +51,8 @@ class FileServiceS3ImplTest {
     }
 
     @Test
-    void testGenerateUploadPresignedUrl() {
+    @DisplayName("Should Generate Upload Presigned URL")
+    void shouldGenerateUploadPresignedUrl() {
         when(presignedPutObjectRequest.url()).thenReturn(fakeUrl);
         when(presignedPutObjectRequest.expiration()).thenReturn(java.time.Instant.now().plusSeconds(300));
         when(s3Presigner.presignPutObject(any(PutObjectPresignRequest.class))).thenReturn(presignedPutObjectRequest);
@@ -64,8 +66,8 @@ class FileServiceS3ImplTest {
     }
 
     @Test
-    void testGenerateDownloadPresignedUrl() {
-
+    @DisplayName("Should Generate Download Presigned URL")
+    void shouldGenerateDownloadPresignedUrl() {
         when(presignedGetObjectRequest.url()).thenReturn(fakeUrl);
         when(presignedGetObjectRequest.expiration()).thenReturn(java.time.Instant.now().plusSeconds(300));
         when(s3Presigner.presignGetObject(any(GetObjectPresignRequest.class))).thenReturn(presignedGetObjectRequest);

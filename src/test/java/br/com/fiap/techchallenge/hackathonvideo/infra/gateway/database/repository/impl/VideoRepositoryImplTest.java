@@ -1,10 +1,10 @@
 package br.com.fiap.techchallenge.hackathonvideo.infra.gateway.database.repository.impl;
 
 import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.database.entities.VideoEntity;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.model.Page;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
@@ -17,6 +17,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class VideoRepositoryImplTest {
 
     @Mock
@@ -25,64 +26,50 @@ class VideoRepositoryImplTest {
     @InjectMocks
     private VideoRepositoryImpl videoRepository;
 
-    private AutoCloseable closeable;
-
-    private UUID videoId;
-    private UUID userId;
     private VideoEntity videoEntity;
 
     @BeforeEach
     void setUp() {
-        closeable = MockitoAnnotations.openMocks(this);
-
-        videoId = UUID.randomUUID();
-        userId = UUID.randomUUID();
-
-        videoEntity = new VideoEntity();
-        videoEntity.setId(videoId);
-        videoEntity.setUserId(userId);
-        videoEntity.setUserEmail("test@example.com");
-        videoEntity.setBucketName("bucket");
-        videoEntity.setVideoKey("videoKey");
-        videoEntity.setFramesKey("framesKey");
-        videoEntity.setVideoName("video.mp4");
-        videoEntity.setCreatedAt(LocalDateTime.now());
-        videoEntity.setUpdatedAt(LocalDateTime.now());
+        this.buildArranges();
     }
 
     @Test
+    @DisplayName("Should Save Video Entity")
     void shouldSaveVideoEntity() {
         when(dynamoDbTemplate.save(videoEntity)).thenReturn(videoEntity);
 
         var result = videoRepository.save(videoEntity);
 
         assertNotNull(result);
-        assertEquals(videoId, result.getId());
+        assertEquals(videoEntity.getId(), result.getId());
         verify(dynamoDbTemplate).save(videoEntity);
     }
 
     @Test
+    @DisplayName("Should Find VideoEntity By Id")
     void shouldFindById() {
         when(dynamoDbTemplate.load(any(Key.class), eq(VideoEntity.class))).thenReturn(videoEntity);
 
-        var result = videoRepository.findById(videoId);
+        var result = videoRepository.findById(videoEntity.getId());
 
         assertTrue(result.isPresent());
-        assertEquals(videoId, result.get().getId());
+        assertEquals(videoEntity.getId(), result.get().getId());
         verify(dynamoDbTemplate).load(any(Key.class), eq(VideoEntity.class));
     }
 
     @Test
+    @DisplayName("Should Return Empty Optional When VideoEntity Not Found By Id")
     void shouldReturnEmptyWhenNotFoundById() {
         when(dynamoDbTemplate.load(any(Key.class), eq(VideoEntity.class))).thenReturn(null);
 
-        var result = videoRepository.findById(videoId);
+        var result = videoRepository.findById(videoEntity.getId());
 
         assertTrue(result.isEmpty());
         verify(dynamoDbTemplate).load(any(Key.class), eq(VideoEntity.class));
     }
 
     @Test
+    @DisplayName("Should Find All VideoEntities By UserId Without StartKey")
     void shouldFindAllByUserIdWithoutStartKey() {
         List<VideoEntity> videos = List.of(videoEntity);
         Map<String, AttributeValue> lastKey = Map.of("someKey", AttributeValue.fromS("someValue"));
@@ -96,7 +83,7 @@ class VideoRepositoryImplTest {
         when(dynamoDbTemplate.query(any(), eq(VideoEntity.class), eq("UserCreatedAtIndex")))
                 .thenReturn(pageIterable);
 
-        var response = videoRepository.findAllByUserId(userId, 10, null);
+        var response = videoRepository.findAllByUserId(videoEntity.getUserId(), 10, null);
 
         assertNotNull(response);
         assertEquals(1, response.getItems().size());
@@ -106,6 +93,7 @@ class VideoRepositoryImplTest {
     }
 
     @Test
+    @DisplayName("Should Find All VideoEntities By UserId With StartKey")
     void shouldFindAllByUserIdWithStartKey() {
         Map<String, AttributeValue> exclusiveStartKey = Map.of("startKey", AttributeValue.fromS("value"));
         List<VideoEntity> videos = List.of(videoEntity);
@@ -118,7 +106,7 @@ class VideoRepositoryImplTest {
         when(dynamoDbTemplate.query(any(), eq(VideoEntity.class), eq("UserCreatedAtIndex")))
                 .thenReturn(pageIterable);
 
-        var response = videoRepository.findAllByUserId(userId, 5, exclusiveStartKey);
+        var response = videoRepository.findAllByUserId(videoEntity.getUserId(), 5, exclusiveStartKey);
 
         assertNotNull(response);
         assertEquals(1, response.getItems().size());
@@ -127,8 +115,17 @@ class VideoRepositoryImplTest {
         verify(dynamoDbTemplate).query(any(), eq(VideoEntity.class), eq("UserCreatedAtIndex"));
     }
 
-    @AfterEach
-    void tearDown() throws Exception {
-        closeable.close();
+
+    private void buildArranges() {
+        videoEntity = new VideoEntity();
+        videoEntity.setId(UUID.randomUUID());
+        videoEntity.setUserId(UUID.randomUUID());
+        videoEntity.setUserEmail("test@example.com");
+        videoEntity.setBucketName("bucket");
+        videoEntity.setVideoKey("videoKey");
+        videoEntity.setFramesKey("framesKey");
+        videoEntity.setVideoName("video.mp4");
+        videoEntity.setCreatedAt(LocalDateTime.now());
+        videoEntity.setUpdatedAt(LocalDateTime.now());
     }
 }

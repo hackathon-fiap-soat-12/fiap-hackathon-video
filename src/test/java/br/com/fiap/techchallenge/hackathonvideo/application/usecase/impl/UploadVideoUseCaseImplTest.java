@@ -11,8 +11,13 @@ import br.com.fiap.techchallenge.hackathonvideo.domain.models.User;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
 import br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.consumer.uploadvideo.dto.UploadVideoDTO;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -21,53 +26,68 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class UploadVideoUseCaseImplTest {
 
+    @Mock
     private VideoPersistence videoPersistence;
+
+    @Mock
     private ProcessProducer processProducer;
+
+    @InjectMocks
     private UploadVideoUseCaseImpl uploadVideoUseCase;
+
+    private Video video;
+
+    private UploadVideoDTO dto;
 
     @BeforeEach
     void setUp() {
-        videoPersistence = mock(VideoPersistence.class);
-        processProducer = mock(ProcessProducer.class);
-        uploadVideoUseCase = new UploadVideoUseCaseImpl(videoPersistence, processProducer);
+        this.buildArranges();
     }
 
     @Test
+    @DisplayName("Should Receive Video And Send To Process")
     void shouldReceiveVideoAndSendToProcess() {
-        UUID videoId = UUID.randomUUID();
-        User user = new User(UUID.randomUUID(), "user@example.com");
-        Video video = new Video(videoId, user, "videoKey", "framesKey", ProcessStatus.NEW, new Audit(LocalDateTime.now(), LocalDateTime.now()), new Metadata("video.mp4", 10, 100L));
-        UploadVideoDTO dto = new UploadVideoDTO(videoId);
-
-        when(videoPersistence.findById(videoId)).thenReturn(Optional.of(video));
+        when(videoPersistence.findById(video.getId())).thenReturn(Optional.of(video));
         when(videoPersistence.save(any(Video.class))).thenReturn(video);
 
         uploadVideoUseCase.receiveToProcess(dto);
 
-        verify(videoPersistence).findById(videoId);
+        verify(videoPersistence).findById(video.getId());
         verify(videoPersistence).save(video);
 
         ArgumentCaptor<VideoToProcessDTO> captor = ArgumentCaptor.forClass(VideoToProcessDTO.class);
         verify(processProducer).sendToProcess(captor.capture());
 
-        VideoToProcessDTO sentDTO = captor.getValue();
+        var sentDTO = captor.getValue();
         assertEquals(video.getId(), sentDTO.id());
         assertEquals(video.getBucketName(), sentDTO.bucketName());
         assertEquals(video.getVideoKey(), sentDTO.key());
     }
 
     @Test
+    @DisplayName("Should Throw Exception When Video Not Found")
     void shouldThrowExceptionWhenVideoNotFound() {
-        UUID videoId = UUID.randomUUID();
-        UploadVideoDTO dto = new UploadVideoDTO(videoId);
-
-        when(videoPersistence.findById(videoId)).thenReturn(Optional.empty());
+        when(videoPersistence.findById(video.getId())).thenReturn(Optional.empty());
 
         assertThrows(DoesNotExistException.class, () -> uploadVideoUseCase.receiveToProcess(dto));
 
         verify(videoPersistence, never()).save(any());
         verify(processProducer, never()).sendToProcess(any());
+    }
+
+    private void buildArranges() {
+        var user = new User(UUID.randomUUID(), "user@example.com");
+        var audit = new Audit(LocalDateTime.now().minusDays(1), LocalDateTime.now());
+        var metadata = new Metadata("video.mp4", 10, 100L);
+
+        video = new Video(
+                UUID.randomUUID(), user, "video1.mp4", "frames1.zip",
+                ProcessStatus.PROCESSED, audit, metadata
+        );
+
+        dto = new UploadVideoDTO(video.getId());
     }
 }

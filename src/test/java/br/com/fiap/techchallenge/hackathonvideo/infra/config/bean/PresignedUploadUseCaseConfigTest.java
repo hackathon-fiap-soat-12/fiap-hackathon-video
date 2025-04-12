@@ -34,5 +34,4 @@ class PresignedUploadUseCaseConfigTest {
         assertNotNull(fileService);
         assertInstanceOf(PresignedUploadUseCaseImpl.class, presignedUploadUseCaseImpl);
     }
-
 }

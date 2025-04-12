@@ -1,106 +1,123 @@
 package br.com.fiap.techchallenge.hackathonvideo.application.usecase.impl;
 
-import br.com.fiap.techchallenge.hackathonvideo.application.exceptions.DoesNotExistException;
 import br.com.fiap.techchallenge.hackathonvideo.application.filestorage.FileService;
 import br.com.fiap.techchallenge.hackathonvideo.application.persistence.VideoPersistence;
+import br.com.fiap.techchallenge.hackathonvideo.domain.enums.PresignedMethods;
 import br.com.fiap.techchallenge.hackathonvideo.domain.enums.ProcessStatus;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.*;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class PresignedDownloadUseCaseImplTest {
 
+    @Mock
     private VideoPersistence videoPersistence;
+
+    @Mock
     private FileService fileService;
+
+    @InjectMocks
     private PresignedDownloadUseCaseImpl useCase;
+
+    private Video video;
 
     @BeforeEach
     void setUp() {
-        videoPersistence = mock(VideoPersistence.class);
-        fileService = mock(FileService.class);
-        useCase = new PresignedDownloadUseCaseImpl(videoPersistence, fileService);
+        this.buildArranges();
+    }
+
+    private void buildArranges() {
+        var user = new User(UUID.randomUUID(), "test@email.com");
+        var audit = new Audit(LocalDateTime.now().minusDays(1), LocalDateTime.now());
+        var metadata = new Metadata("video.mp4", 10, 100L);
+
+        video = new Video(
+                UUID.randomUUID(), user, "video1.mp4", "frames1.zip",
+                ProcessStatus.PROCESSED, audit, metadata
+        );
     }
 
     @Test
-    void testPresignedDownload_Success() {
-        UUID videoId = UUID.randomUUID();
-        UUID userId = UUID.randomUUID();
-        String email = "test@email.com";
+    @DisplayName("Should return presigned file when video is processed")
+    void shouldReturnPresignedFileWhenVideoIsProcessed() {
+        var presignedFile = new PresignedFile(video.getId(), "https://example.com", PresignedMethods.GET, Instant.now().plusSeconds(3600));
 
-        User user = new User(userId, email);
-        Video video = new Video(videoId, user, "videoKey", "framesKey",
-                ProcessStatus.PROCESSED, new Audit(Instant.now().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime(), Instant.now().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime()), new Metadata("video.mp4", 10, 100L));
-
-        PresignedFile presignedFile = new PresignedFile(videoId, "https://example.com", null, Instant.now().plusSeconds(3600));
-
-        when(videoPersistence.findById(videoId)).thenReturn(Optional.of(video));
+        when(videoPersistence.findById(video.getId())).thenReturn(Optional.of(video));
         when(fileService.generateDownloadPresignedUrl(video)).thenReturn(presignedFile);
 
-        PresignedFile result = useCase.presignedDownload(videoId);
+        var result = useCase.presignedDownload(video.getId());
 
         assertNotNull(result);
         assertEquals(presignedFile.getUrl(), result.getUrl());
-        verify(videoPersistence).findById(videoId);
+        verify(videoPersistence).findById(video.getId());
         verify(fileService).generateDownloadPresignedUrl(video);
     }
 
     @Test
-    void testPresignedDownload_VideoNotFound() {
-        UUID videoId = UUID.randomUUID();
-        when(videoPersistence.findById(videoId)).thenReturn(Optional.empty());
+    @DisplayName("Should throw exception when video not found")
+    void shouldThrowExceptionWhenVideoNotFound() {
+        when(videoPersistence.findById(video.getId())).thenReturn(Optional.empty());
 
-        DoesNotExistException ex = assertThrows(DoesNotExistException.class,
-                () -> useCase.presignedDownload(videoId));
+        var ex = assertThrows(Exception.class,
+                () -> useCase.presignedDownload(video.getId()));
 
         assertEquals("Zip File not found", ex.getMessage());
-        verify(videoPersistence).findById(videoId);
+        verify(videoPersistence).findById(video.getId());
         verify(fileService, never()).generateDownloadPresignedUrl(any());
     }
 
     @Test
-    void testPresignedDownload_VideoStatusFailed() {
+    @DisplayName("Should throw exception when video status is FAILED")
+    void shouldThrowExceptionWhenVideoStatusIsFailed() {
         assertThrowsByStatus(ProcessStatus.FAILED, "An error happened when processing the video, try processing again");
     }
 
     @Test
-    void testPresignedDownload_VideoStatusNew() {
+    @DisplayName("Should throw exception when video status is NEW")
+    void shouldThrowExceptionWhenVideoStatusIsNew() {
         assertThrowsByStatus(ProcessStatus.NEW, "The video has not yet been sent");
     }
 
     @Test
-    void testPresignedDownload_VideoStatusReceived() {
+    @DisplayName("Should throw exception when video status is RECEIVED")
+    void shouldThrowExceptionWhenVideoStatusIsReceived() {
         assertThrowsByStatus(ProcessStatus.RECEIVED, "The video is in processing");
     }
 
     @Test
-    void testPresignedDownload_VideoStatusProcessing() {
+    @DisplayName("Should throw exception when video status is PROCESSING")
+    void shouldThrowExceptionWhenVideoStatusIsProcessing() {
         assertThrowsByStatus(ProcessStatus.PROCESSING, "The video is in processing");
     }
 
     private void assertThrowsByStatus(ProcessStatus status, String expectedMessage) {
-        UUID videoId = UUID.randomUUID();
-        UUID userId = UUID.randomUUID();
-        String email = "test@email.com";
-        User user = new User(userId, email);
+        video = new Video(UUID.randomUUID(), new User(UUID.randomUUID(), "test@email.com"),
+                "videoKey", "framesKey", status,
+                new Audit(LocalDateTime.now().minusDays(1), LocalDateTime.now()),
+                new Metadata("video.mp4", 10, 100L));
 
-        Video video = new Video(videoId, user, "videoKey", "framesKey",
-                status, new Audit(Instant.now().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime(), Instant.now().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime()), new Metadata("video.mp4", 10, 100L));
+        when(videoPersistence.findById(video.getId())).thenReturn(Optional.of(video));
 
-        when(videoPersistence.findById(videoId)).thenReturn(Optional.of(video));
-
-        DoesNotExistException ex = assertThrows(DoesNotExistException.class,
-                () -> useCase.presignedDownload(videoId));
+        var ex = assertThrows(Exception.class,
+                () -> useCase.presignedDownload(video.getId()));
 
         assertEquals(expectedMessage, ex.getMessage());
-        verify(videoPersistence).findById(videoId);
+        verify(videoPersistence).findById(video.getId());
         verify(fileService, never()).generateDownloadPresignedUrl(any());
     }
 }

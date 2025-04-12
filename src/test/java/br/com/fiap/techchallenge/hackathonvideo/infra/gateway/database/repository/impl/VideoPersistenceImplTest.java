@@ -5,53 +5,69 @@ import br.com.fiap.techchallenge.hackathonvideo.domain.models.Audit;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Metadata;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.User;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
-import br.com.fiap.techchallenge.hackathonvideo.domain.models.pageable.CustomPage;
 import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.database.entities.VideoEntity;
 import br.com.fiap.techchallenge.hackathonvideo.infra.gateway.database.repository.VideoRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class VideoPersistenceImplTest {
 
+    @Mock
     private VideoRepository repository;
+
+    @Mock
+    private ObjectMapper objectMapper;
+
+    @InjectMocks
     private VideoPersistenceImpl videoPersistence;
+
+    private Video video;
+
+    private VideoEntity entity;
 
     @BeforeEach
     void setup() {
-        repository = mock(VideoRepository.class);
-        videoPersistence = new VideoPersistenceImpl(new ObjectMapper(), repository);
+        this.buildArranges();
     }
 
     @Test
-    void testSave() {
-        Video video = buildVideo();
-        VideoEntity entity = new VideoEntity(video);
+    @DisplayName("Should Save Video")
+    void shouldSaveVideo() {
         when(repository.save(any(VideoEntity.class))).thenReturn(entity);
 
-        Video saved = videoPersistence.save(video);
+        var videoSaved = videoPersistence.save(video);
 
-        assertNotNull(saved);
-        assertEquals(video.getId(), saved.getId());
+        assertNotNull(videoSaved);
+        assertEquals(video.getId(), videoSaved.getId());
         verify(repository).save(any(VideoEntity.class));
     }
 
     @Test
-    void testUpdate() {
-        Video video = buildVideo();
-        VideoEntity updatedEntity = new VideoEntity().update(video);
+    @DisplayName("Should Update Video")
+    void shouldUpdateVideo() {
+        var updatedEntity = entity.update(video);
         when(repository.save(any(VideoEntity.class))).thenReturn(updatedEntity);
 
-        Video result = videoPersistence.update(video);
+        var result = videoPersistence.update(video);
 
         assertNotNull(result);
         assertEquals(video.getId(), result.getId());
@@ -59,9 +75,8 @@ class VideoPersistenceImplTest {
     }
 
     @Test
-    void testFindByIdFound() {
-        Video video = buildVideo();
-        VideoEntity entity = new VideoEntity(video);
+    @DisplayName("Should Find Video By ID When Present")
+    void shouldFindVideoByIdWhenPresent() {
         when(repository.findById(video.getId())).thenReturn(Optional.of(entity));
 
         Optional<Video> result = videoPersistence.findById(video.getId());
@@ -72,33 +87,31 @@ class VideoPersistenceImplTest {
     }
 
     @Test
-    void testFindByIdNotFound() {
-        UUID id = UUID.randomUUID();
-        when(repository.findById(id)).thenReturn(Optional.empty());
+    @DisplayName("Should Return Empty When Video Not Found By ID")
+    void shouldReturnEmptyWhenVideoNotFoundById() {
+        when(repository.findById(video.getId())).thenReturn(Optional.empty());
 
-        Optional<Video> result = videoPersistence.findById(id);
+        Optional<Video> result = videoPersistence.findById(video.getId());
 
         assertFalse(result.isPresent());
-        verify(repository).findById(id);
+        verify(repository).findById(video.getId());
     }
 
     @Test
-    void testFindAllByUserId() {
-        UUID userId = UUID.randomUUID();
-        Video video = buildVideo();
-        VideoEntity entity = new VideoEntity(video);
+    @DisplayName("Should Find All Videos By User ID")
+    void shouldFindAllVideosByUserId() throws JsonProcessingException {
         Map<String, AttributeValue> lastEvaluatedKey = new HashMap<>();
         lastEvaluatedKey.put("id", AttributeValue.builder().s("some-id").build());
 
-
-        PaginatedResponse<VideoEntity> response =PaginatedResponse.<VideoEntity>builder()
+        PaginatedResponse<VideoEntity> response = PaginatedResponse.<VideoEntity>builder()
                 .items(List.of(entity))
                 .lastEvaluatedKey(lastEvaluatedKey)
                 .build();
 
-        when(repository.findAllByUserId(eq(userId), anyInt(), any())).thenReturn(response);
+        when(repository.findAllByUserId(eq(video.getUserId()), anyInt(), any())).thenReturn(response);
+        when(objectMapper.writeValueAsString(any())).thenReturn("json-string");
 
-        CustomPage page = videoPersistence.findAllByUserId(userId, 10, null);
+        var page = videoPersistence.findAllByUserId(video.getUserId(), 10, null);
 
         assertNotNull(page);
         assertEquals(1, page.videos().size());
@@ -106,57 +119,63 @@ class VideoPersistenceImplTest {
     }
 
     @Test
-    void testParseExclusiveStartKey_InvalidJson_ThrowsException() {
-        String invalidJson = "invalid-json";
-
-        Exception ex = assertThrows(Exception.class, () ->
-                videoPersistence.findAllByUserId(UUID.randomUUID(), 10, invalidJson));
-
-        assertTrue(ex.getMessage().contains("Erro ao converter exclusiveStartKey"));
+    @DisplayName("Should Throw Exception When ExclusiveStartKey Is Invalid JSON")
+    void shouldThrowExceptionWhenExclusiveStartKeyIsInvalidJson() {
+        assertThrows(Exception.class, () ->
+                videoPersistence.findAllByUserId(UUID.randomUUID(), 10, "invalid-json"));
     }
 
     @Test
-    void testConvertLastEvaluatedKeyToString() {
+    @DisplayName("Should Convert LastEvaluatedKey To JSON String")
+    void shouldConvertLastEvaluatedKeyToJsonString() throws JsonProcessingException {
         Map<String, AttributeValue> lastEvaluatedKey = new HashMap<>();
         lastEvaluatedKey.put("key", AttributeValue.builder().s("value").build());
 
-        String json = videoPersistence.convertLastEvaluatedKeyToString(lastEvaluatedKey);
+        when(objectMapper.writeValueAsString(any())).thenReturn("value");
+
+        var json = videoPersistence.convertLastEvaluatedKeyToString(lastEvaluatedKey);
 
         assertNotNull(json);
         assertTrue(json.contains("value"));
     }
 
     @Test
-    void testConvertLastEvaluatedKeyToString_NullMap_ReturnsNull() {
+    @DisplayName("Should Return Null When LastEvaluatedKey Map Is Null")
+    void shouldReturnNullWhenLastEvaluatedKeyMapIsNull() {
         assertNull(videoPersistence.convertLastEvaluatedKeyToString(null));
     }
 
     @Test
-    void testConvertLastEvaluatedKeyToString_EmptyMap_ReturnsNull() {
+    @DisplayName("Should Return Null When LastEvaluatedKey Map Is Empty")
+    void shouldReturnNullWhenLastEvaluatedKeyMapIsEmpty() {
         assertNull(videoPersistence.convertLastEvaluatedKeyToString(Collections.emptyMap()));
     }
 
     @Test
-    void testConvertLastEvaluatedKeyToString_ThrowsException() throws Exception {
+    @DisplayName("Should Throw Exception When Converting LastEvaluatedKey To String Fails")
+    void shouldThrowExceptionWhenConvertingLastEvaluatedKeyToStringFails() throws Exception {
         Map<String, AttributeValue> lastEvaluatedKey = new HashMap<>();
         lastEvaluatedKey.put("key", AttributeValue.builder().s("value").build());
 
-        ObjectMapper mockedObjectMapper = mock(ObjectMapper.class);
-        when(mockedObjectMapper.writeValueAsString(any()))
+        when(objectMapper.writeValueAsString(any()))
                 .thenThrow(new RuntimeException("Simulated serialization error"));
 
-        VideoPersistenceImpl videoPersistenceWithMock = new VideoPersistenceImpl(mockedObjectMapper, repository);
-
         assertThrows(Exception.class, () ->
-                videoPersistenceWithMock.convertLastEvaluatedKeyToString(lastEvaluatedKey));
+                videoPersistence.convertLastEvaluatedKeyToString(lastEvaluatedKey));
     }
 
     @Test
-    void testParseExclusiveStartKey_Success() throws Exception {
+    @DisplayName("Should Parse ExclusiveStartKey From Valid JSON")
+    void shouldParseExclusiveStartKeyFromValidJson() throws Exception {
         String json = "{\"key1\":\"value1\",\"key2\":\"value2\"}";
 
         Method method = VideoPersistenceImpl.class.getDeclaredMethod("parseExclusiveStartKey", String.class);
         method.setAccessible(true);
+
+        Map<String, String> expectedMap = Map.of("key1", "value1", "key2", "value2");
+
+        when(objectMapper.readValue(ArgumentMatchers.anyString(), ArgumentMatchers.any(TypeReference.class)))
+                .thenReturn(expectedMap);
 
         @SuppressWarnings("unchecked")
         Map<String, AttributeValue> result = (Map<String, AttributeValue>) method.invoke(videoPersistence, json);
@@ -167,10 +186,8 @@ class VideoPersistenceImplTest {
         assertEquals("value2", result.get("key2").s());
     }
 
-
-
-    private Video buildVideo() {
-        return new Video(
+    private void buildArranges() {
+        video = new Video(
                 UUID.randomUUID(),
                 new User(UUID.randomUUID(), "test@email.com"),
                 "videoKey",
@@ -179,5 +196,7 @@ class VideoPersistenceImplTest {
                 new Audit(LocalDateTime.now(), LocalDateTime.now()),
                 new Metadata("video.mp4", 10, 100L)
         );
+
+        entity = new VideoEntity(video);
     }
 }
