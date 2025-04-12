@@ -28,7 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
-		<sonar.exclusions>**/NoSniffHeaderFilter.java, **/ObjectMapperConfig.java, **/JacksonConfig.java, **/AwsSqsConfig.java, **/AwsSqsConfigLocal.java, **/AwsS3Config.java, **/AwsS3ConfigLocal.java, **/AwsDynamoDbConfig.java, **/AwsDynamoDbConfigLocal.java, **/SpringDocConfigurations.java, **/ErrorsValidateData.java, **/HackathonvideoApplication.java</sonar.exclusions>
+		<sonar.exclusions>**/VideoEntity.java, **/NoSniffHeaderFilter.java, **/ObjectMapperConfig.java, **/JacksonConfig.java, **/AwsSqsConfig.java, **/AwsSqsConfigLocal.java, **/AwsS3Config.java, **/AwsS3ConfigLocal.java, **/AwsDynamoDbConfig.java, **/AwsDynamoDbConfigLocal.java, **/SpringDocConfigurations.java, **/ErrorsValidateData.java, **/HackathonvideoApplication.java</sonar.exclusions>
 	</properties>
 	<dependencies>
 		<!-- Spring Boot -->
