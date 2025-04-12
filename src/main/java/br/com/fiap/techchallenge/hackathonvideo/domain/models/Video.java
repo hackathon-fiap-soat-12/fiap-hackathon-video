@@ -40,8 +40,8 @@ public class Video {
     public Video(String videoName, User user) {
         this.id = UUID.randomUUID();
         this.user = user;
-        this.videoKey = PATH_VIDEO + videoName;
-        this.framesKey = PATH_FRAMES + videoName + ".zip";
+        this.videoKey = PATH_VIDEO + this.id + "_" + videoName;
+        this.framesKey = PATH_FRAMES + this.id + "_" + videoName + ".zip";
         this.status = ProcessStatus.NEW;
         this.audit = new Audit(LocalDateTime.now(), LocalDateTime.now());
         this.metadata = new Metadata(videoName);
