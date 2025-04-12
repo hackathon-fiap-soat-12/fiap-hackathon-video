@@ -10,18 +10,17 @@ import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.pageable.CustomPage;
 import br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.controller.dto.PresignedUploadRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.http.HttpStatus;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -41,25 +40,26 @@ class VideoControllerTest {
     @InjectMocks
     private VideoController controller;
 
-    private UUID fileId;
     private UUID userId;
+
     private PresignedFile presignedFile;
+
+    private PresignedUploadRequestDTO requestDTO;
+
+    private CustomPage page;
 
     @BeforeEach
     void setUp() {
-        fileId = UUID.randomUUID();
-        userId = UUID.randomUUID();
-        presignedFile = new PresignedFile(fileId, "https://example.com", PresignedMethods.PUT, Instant.now().plusSeconds(300));
+        this.buildArranges();
     }
 
     @Test
+    @DisplayName("Should Return Presigned Upload Successfully")
     void shouldReturnPresignedUploadSuccessfully() {
-        PresignedUploadRequestDTO requestDTO = new PresignedUploadRequestDTO("video.mp4", "video/mp4");
-        String email = "user@example.com";
-
+        var email = page.videos().getFirst().getUserEmail();
         when(presignedUploadUseCase.presignedUpload(requestDTO, userId, email)).thenReturn(presignedFile);
 
-        ResponseEntity<?> response = controller.presignedUpload(requestDTO, userId, email);
+        var response = controller.presignedUpload(requestDTO, userId, email);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -67,27 +67,38 @@ class VideoControllerTest {
     }
 
     @Test
+    @DisplayName("Should Return Presigned Download Successfully")
     void shouldReturnPresignedDownloadSuccessfully() {
-        when(presignedDownloadUseCase.presignedDownload(fileId)).thenReturn(presignedFile);
+        when(presignedDownloadUseCase.presignedDownload(presignedFile.getId())).thenReturn(presignedFile);
 
-        ResponseEntity<?> response = controller.presignedDownload(fileId);
+        var response = controller.presignedDownload(presignedFile.getId());
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        verify(presignedDownloadUseCase).presignedDownload(fileId);
+        verify(presignedDownloadUseCase).presignedDownload(presignedFile.getId());
     }
 
     @Test
+    @DisplayName("Should Return List Files Successfully")
     void shouldReturnListFilesSuccessfully() {
-        Video video = new Video("video.mp4", new User(userId, "user@example.com"));
-        CustomPage page = new CustomPage(List.of(video), "abc123");
-
         when(listFilesUseCase.getFiles(userId, 10, null)).thenReturn(page);
 
-        ResponseEntity<?> response = controller.getFiles(userId, 10, null);
+        var response = controller.getFiles(userId, 10, null);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         verify(listFilesUseCase).getFiles(userId, 10, null);
+    }
+
+    private void buildArranges() {
+        userId = UUID.randomUUID();
+
+        presignedFile = new PresignedFile(UUID.randomUUID(), "https://example.com", PresignedMethods.PUT, Instant.now().plusSeconds(300));
+
+        requestDTO = new PresignedUploadRequestDTO("video.mp4", "video/mp4");
+
+        var video = new Video("video.mp4", new User(userId, "user@example.com"));
+        page = new CustomPage(List.of(video), "abc123");
+
     }
 }

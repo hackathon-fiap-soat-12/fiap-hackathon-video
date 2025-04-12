@@ -3,12 +3,15 @@ package br.com.fiap.techchallenge.hackathonvideo.application.usecase.impl;
 import br.com.fiap.techchallenge.hackathonvideo.application.filestorage.FileService;
 import br.com.fiap.techchallenge.hackathonvideo.application.persistence.VideoPersistence;
 import br.com.fiap.techchallenge.hackathonvideo.domain.enums.PresignedMethods;
-import br.com.fiap.techchallenge.hackathonvideo.domain.models.PresignedFile;
-import br.com.fiap.techchallenge.hackathonvideo.domain.models.User;
-import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
+import br.com.fiap.techchallenge.hackathonvideo.domain.models.*;
 import br.com.fiap.techchallenge.hackathonvideo.infra.entrypoint.controller.dto.PresignedUploadRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -16,52 +19,57 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class PresignedUploadUseCaseImplTest {
 
+    @Mock
     private VideoPersistence videoPersistence;
+
+    @Mock
     private FileService fileService;
+
+    @InjectMocks
     private PresignedUploadUseCaseImpl useCase;
+
+    private Video video;
+
+    private PresignedUploadRequestDTO dto;
+
+    private PresignedFile expectedPresignedFile;
 
     @BeforeEach
     void setUp() {
-        videoPersistence = mock(VideoPersistence.class);
-        fileService = mock(FileService.class);
-        useCase = new PresignedUploadUseCaseImpl(videoPersistence, fileService);
+        this.buildArranges();
     }
 
     @Test
+    @DisplayName("Should Generate Presigned URL Successfully")
     void shouldGeneratePresignedUrlSuccessfully() {
-        // Arrange
-        UUID userId = UUID.randomUUID();
-        String email = "test@example.com";
-        String fileName = "video.mp4";
-        String fileType = "video/mp4";
-
-        PresignedUploadRequestDTO dto = new PresignedUploadRequestDTO(fileName, fileType);
-
-        Video video = new Video(fileName, new User(userId, email));
         when(videoPersistence.save(any(Video.class))).thenReturn(video);
+        when(fileService.generateUploadPresignedUrl(video, dto.fileType())).thenReturn(expectedPresignedFile);
 
-        PresignedFile expectedPresignedFile = new PresignedFile(
-                video.getId(),
-                "https://fake-url.com/upload",
-                PresignedMethods.PUT,
-                Instant.now().plusSeconds(3600)
-        );
-        when(fileService.generateUploadPresignedUrl(video, fileType)).thenReturn(expectedPresignedFile);
+        var result = useCase.presignedUpload(dto, video.getUserId(), video.getUserEmail());
 
-        // Act
-        PresignedFile result = useCase.presignedUpload(dto, userId, email);
-
-        // Assert
         assertNotNull(result);
         assertEquals(expectedPresignedFile.getId(), result.getId());
         assertEquals(expectedPresignedFile.getUrl(), result.getUrl());
         assertEquals(expectedPresignedFile.getMethod(), result.getMethod());
         assertTrue(result.getSecondsToExpire() > 0);
 
-        // Verifica se os mocks foram chamados com os argumentos esperados
         verify(videoPersistence).save(any(Video.class));
-        verify(fileService).generateUploadPresignedUrl(video, fileType);
+        verify(fileService).generateUploadPresignedUrl(video, dto.fileType());
+    }
+
+    private void buildArranges() {
+        video = new Video("video.mp4", new User(UUID.randomUUID(), "test@email.com"));
+
+        dto = new PresignedUploadRequestDTO(video.getVideoName(), "video/mp4");
+
+        expectedPresignedFile = new PresignedFile(
+                video.getId(),
+                "https://fake-url.com/upload",
+                PresignedMethods.PUT,
+                Instant.now().plusSeconds(3600)
+        );
     }
 }

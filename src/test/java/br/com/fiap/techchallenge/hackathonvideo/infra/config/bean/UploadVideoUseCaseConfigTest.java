@@ -34,5 +34,4 @@ class UploadVideoUseCaseConfigTest {
         assertNotNull(processProducer);
         assertInstanceOf(UploadVideoUseCaseImpl.class, uploadVideoUseCaseImpl);
     }
-
 }
