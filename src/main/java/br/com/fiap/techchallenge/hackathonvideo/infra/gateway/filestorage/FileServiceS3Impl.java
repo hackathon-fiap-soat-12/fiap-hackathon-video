@@ -29,7 +29,7 @@ public class FileServiceS3Impl implements FileService {
     public PresignedFile generateUploadPresignedUrl(Video video, String fileType) {
         Map<String, String> metadata = new HashMap<>();
         metadata.put("Content-Type", fileType);
-        metadata.put("fileId", video.getId().toString());
+        metadata.put("x-amz-meta-id", video.getId().toString());
 
         var presignedPutRequest = s3Presigner.presignPutObject(
                 PutObjectPresignRequest.builder()
