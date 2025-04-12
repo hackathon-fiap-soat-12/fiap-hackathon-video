@@ -88,6 +88,11 @@ resource "kubernetes_deployment" "video_deployment" {
           }
 
           env {
+            name = "VIDEO_FILE_S3_BUCKET"
+            value = "video-file-store-${data.aws_caller_identity.current.account_id}"
+          }
+
+          env {
             name = "AWS_ACCESS_KEY_ID"
             value_from {
               secret_key_ref {
@@ -160,6 +165,11 @@ resource "kubernetes_deployment" "video_deployment" {
           env {
             name = "OTEL_JAVA_DISABLED_EXPORTERS"
             value = "logging"
+          }
+
+          env {
+            name  = "OTEL_INSTRUMENTATION_SERVLET_EXCLUDE"
+            value = "/video/actuator/health.*"
           }
         }
       }
