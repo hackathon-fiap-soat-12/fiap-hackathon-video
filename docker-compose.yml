@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3,sqs,dynamodb
+      - EDGE_PORT=4566
+      - DEFAULT_REGION=us-east-1
+    volumes:
+      - ./bash:/docker-entrypoint-initaws.d # monta o script para execução inicial
+      - localstack_data:/var/lib/localstack
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  myapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      localstack:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+    entrypoint: >
+      sh -c "
+        chmod +x /docker-entrypoint-initaws.d/create_local_resources.sh &&
+        /docker-entrypoint-initaws.d/create_local_resources.sh &&
+        java -jar /app/myapp.jar
+      "
+    volumes:
+      - ./bash:/docker-entrypoint-initaws.d
+
+volumes:
+  localstack_data:
