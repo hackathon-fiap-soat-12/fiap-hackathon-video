@@ -4,6 +4,7 @@ import br.com.fiap.techchallenge.hackathonvideo.application.filestorage.FileServ
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.PresignedFile;
 import br.com.fiap.techchallenge.hackathonvideo.domain.models.Video;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
@@ -31,12 +32,16 @@ public class FileServiceS3Impl implements FileService {
         metadata.put("Content-Type", fileType);
         metadata.put("x-amz-meta-id", video.getId().toString());
 
-        var presignedPutRequest = s3Presigner.presignPutObject(
-                PutObjectPresignRequest.builder()
-                        .signatureDuration(Duration.ofMinutes(MINUTES))
-                        .putObjectRequest(b -> b.bucket(video.getBucketName()).key(video.getVideoKey()).metadata(metadata))
-                        .build()
-        );
+        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(MINUTES))
+                .putObjectRequest(b ->
+                    b.bucket(video.getBucketName())
+                        .key(video.getVideoKey())
+                        .metadata(metadata)
+                        .acl(ObjectCannedACL.BUCKET_OWNER_FULL_CONTROL))
+                    .build();
+
+        var presignedPutRequest = s3Presigner.presignPutObject(presignRequest);
 
         return new PresignedFile(video.getId(), presignedPutRequest.url().toString(), PUT, presignedPutRequest.expiration());
     }
