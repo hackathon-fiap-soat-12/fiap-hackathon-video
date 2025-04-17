@@ -20,7 +20,7 @@ import static br.com.fiap.techchallenge.hackathonvideo.domain.enums.PresignedMet
 public class FileServiceS3Impl implements FileService {
 
     private final S3Presigner s3Presigner;
-    private static final int MINUTES = 5;
+    private static final int FIVE_MINUTES = 5;
 
     public FileServiceS3Impl(S3Presigner s3Presigner) {
         this.s3Presigner = s3Presigner;
@@ -32,16 +32,12 @@ public class FileServiceS3Impl implements FileService {
         metadata.put("Content-Type", fileType);
         metadata.put("x-amz-meta-id", video.getId().toString());
 
-        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
-                .signatureDuration(Duration.ofMinutes(MINUTES))
-                .putObjectRequest(b ->
-                    b.bucket(video.getBucketName())
-                        .key(video.getVideoKey())
-                        .metadata(metadata)
-                        .acl(ObjectCannedACL.BUCKET_OWNER_FULL_CONTROL))
-                    .build();
-
-        var presignedPutRequest = s3Presigner.presignPutObject(presignRequest);
+        var presignedPutRequest = s3Presigner.presignPutObject(
+                PutObjectPresignRequest.builder()
+                        .signatureDuration(Duration.ofMinutes(FIVE_MINUTES))
+                        .putObjectRequest(b -> b.bucket(video.getBucketName()).key(video.getVideoKey())
+                                .metadata(metadata).acl(ObjectCannedACL.BUCKET_OWNER_FULL_CONTROL))
+                        .build());
 
         return new PresignedFile(video.getId(), presignedPutRequest.url().toString(), PUT, presignedPutRequest.expiration());
     }
@@ -50,7 +46,7 @@ public class FileServiceS3Impl implements FileService {
     public PresignedFile generateDownloadPresignedUrl(Video video) {
         var presignedGetRequest = s3Presigner.presignGetObject(
                 GetObjectPresignRequest.builder()
-                        .signatureDuration(Duration.ofMinutes(MINUTES))
+                        .signatureDuration(Duration.ofMinutes(FIVE_MINUTES))
                         .getObjectRequest(b -> b.bucket(video.getBucketName()).key(video.getFramesKey()))
                         .build()
         );
