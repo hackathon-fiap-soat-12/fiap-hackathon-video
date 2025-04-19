@@ -19,12 +19,12 @@ done
 
 echo "Todas as filas foram criadas com sucesso!"
 
-aws --endpoint "$ENDPOINT" s3 mb s3://fiap-alquimia-dos-frames
+aws --endpoint "$ENDPOINT" s3 mb s3://fiap-alquimia-dos-frames-hackathon-soat-8
 
 echo "Bucket criado com sucesso!"
 
 echo $null > empty.txt
-aws --endpoint-url="$ENDPOINT" s3 cp empty.txt s3://fiap-alquimia-dos-frames/videos/
+aws --endpoint-url="$ENDPOINT" s3 cp empty.txt s3://fiap-alquimia-dos-frames-hackathon-soat-8/videos/
 rm -f empty.txt
 
 echo "folders criados com sucesso!"
